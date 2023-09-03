@@ -12,16 +12,6 @@ load_dotenv()
 
 
 @pytest.fixture(scope='package')
-def amo_crm_url() -> str:
-    """Get AmoCRM API url.
-
-    Returns:
-        AmoCRM API url.
-    """
-    return environ['AMOCRM_API_URL']
-
-
-@pytest.fixture(scope='package')
 def amocrm_auth_code() -> str:
     """Get AmoCRM authorization code.
 
@@ -41,6 +31,8 @@ def credentials() -> Credentials:
         Test credentials.
     """
     return Credentials(
+        api_url=environ['AMOCRM_API_URL'],
+        drive_url=environ['AMOCRM_DRIVE_URL'],
         client_id=environ['AMOCRM_CLIENT_ID'],
         client_secret=environ['AMOCRM_CLIENT_SECRET'],
         redirect_uri=environ['AMOCRM_REDIRECT_URI'],

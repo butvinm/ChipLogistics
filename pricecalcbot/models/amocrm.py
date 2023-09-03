@@ -9,6 +9,8 @@ from pydantic import BaseModel
 class Credentials(BaseModel):
     """Integration credentials model."""
 
+    api_url: str
+    drive_url: str
     client_id: str
     client_secret: str
     access_token: Optional[str]
