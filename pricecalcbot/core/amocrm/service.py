@@ -5,13 +5,14 @@ Encapsulates AmoCRM API calls.
 
 
 from contextlib import asynccontextmanager
+from http import HTTPStatus
 from typing import AsyncGenerator
 
 from aiohttp import ClientSession
 
 from pricecalcbot.core.amocrm.repo import AmoCRMRepository
-from pricecalcbot.core.amocrm.responses import AuthResponse
-from pricecalcbot.models.amocrm import Credentials
+from pricecalcbot.core.amocrm.responses import AuthResponse, CustomersResponse
+from pricecalcbot.models.amocrm import Credentials, Customer
 
 
 class AmoCRMService(object):
@@ -83,7 +84,7 @@ class AmoCRMService(object):
             },
         ) as response:
             response.raise_for_status()
-            response_data = AuthResponse(**await response.json())
+            response_data = AuthResponse.from_json(await response.json())
             self._credentials.access_token = response_data.access_token
             self._credentials.refresh_token = response_data.refresh_token
             await self._repo.save_credentials(self._credentials)
@@ -104,7 +105,39 @@ class AmoCRMService(object):
             },
         ) as response:
             response.raise_for_status()
-            response_data = AuthResponse(**await response.json())
+            response_data = AuthResponse.from_json(await response.json())
             self._credentials.access_token = response_data.access_token
             self._credentials.refresh_token = response_data.refresh_token
             await self._repo.save_credentials(self._credentials)
+
+    async def find_customers(self, query: str = '') -> list[Customer]:
+        """Find customers by fields data.
+
+        Args:
+            query: Value to search in fields.
+
+        Returns:
+            List of found customers.
+        """
+        async with self._session.get(
+            '/api/v4/customers?query={query}'.format(query=query),
+            headers=self._get_auth_header(),
+        ) as response:
+            response.raise_for_status()
+            if response.status == HTTPStatus.OK:
+                response_data = CustomersResponse.from_json(
+                    json=await response.json(),
+                )
+            else:
+                response_data = CustomersResponse(page=0, customers=[])
+
+            return response_data.customers
+
+    def _get_auth_header(self) -> dict[str, str]:
+        """Return Bearer authorization header.
+
+        Returns:
+            Bearer auth header with access_token.
+        """
+        bearer = 'Bearer {token}'.format(token=self._credentials.access_token)
+        return {'Authorization': bearer}

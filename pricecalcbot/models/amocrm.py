@@ -14,3 +14,13 @@ class Credentials(BaseModel):
     access_token: Optional[str]
     refresh_token: Optional[str]
     redirect_uri: str
+
+
+class Customer(BaseModel):
+    """AmoCRM customer model.
+
+    See https://www.amocrm.ru/developers/content/crm_platform/customers-api
+    """
+
+    id: int
+    name: str

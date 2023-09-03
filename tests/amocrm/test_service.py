@@ -38,7 +38,7 @@ class MockAmoCRMRepository(AmoCRMRepository):
         self._credentials = credentials
 
 
-@pytest.fixture
+@pytest.fixture(scope='module')
 def amo_repo(credentials: Credentials) -> AmoCRMRepository:
     """Return a mock repository.
 
@@ -51,7 +51,7 @@ def amo_repo(credentials: Credentials) -> AmoCRMRepository:
     return MockAmoCRMRepository(credentials)
 
 
-@pytest.fixture
+@pytest.fixture(scope='module')
 async def amo_service(
     amocrm_api_host: str,
     amo_repo: AmoCRMRepository,
@@ -69,7 +69,6 @@ async def amo_service(
         yield service
 
 
-@pytest.mark.asyncio
 async def test_authorize(
     amocrm_auth_code: str,
     amo_service: AmoCRMService,
@@ -83,3 +82,24 @@ async def test_authorize(
     await amo_service.authorize(amocrm_auth_code)
     assert amo_service._credentials.access_token is not None
     assert amo_service._credentials.refresh_token is not None
+
+
+async def test_find_customers(
+    amo_service: AmoCRMService,
+) -> None:
+    """Test the find_customers method.
+
+    Args:
+        amo_service: Service with a mock repository.
+    """
+    customers = await amo_service.find_customers()
+    assert len(customers) == 3
+
+    customers = await amo_service.find_customers('John')
+    assert len(customers) == 1
+
+    customers = await amo_service.find_customers('jOhN')
+    assert len(customers) == 1
+
+    customers = await amo_service.find_customers('Not Exist')
+    assert not customers
