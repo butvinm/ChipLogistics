@@ -13,7 +13,7 @@ class AmoCRMRepository(Protocol):
         """Get AmoCRM integration credentials.
 
         Returns:
-            Credentials: AmoCRM integration credentials.
+            AmoCRM integration credentials.
         """
 
     async def save_credentials(self, credentials: Credentials) -> None:

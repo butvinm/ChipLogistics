@@ -10,6 +10,7 @@ from typing import AsyncGenerator
 from aiohttp import ClientSession
 
 from pricecalcbot.core.amocrm.repo import AmoCRMRepository
+from pricecalcbot.core.amocrm.responses import AuthResponse
 from pricecalcbot.models.amocrm import Credentials
 
 
@@ -82,9 +83,9 @@ class AmoCRMService(object):
             },
         ) as response:
             response.raise_for_status()
-            response_data = await response.json()
-            self._credentials.access_token = response_data['access_token']
-            self._credentials.refresh_token = response_data['refresh_token']
+            response_data = AuthResponse(**await response.json())
+            self._credentials.access_token = response_data.access_token
+            self._credentials.refresh_token = response_data.refresh_token
             await self._repo.save_credentials(self._credentials)
 
     async def refresh_access_token(self) -> None:
@@ -103,7 +104,7 @@ class AmoCRMService(object):
             },
         ) as response:
             response.raise_for_status()
-            response_data = await response.json()
-            self._credentials.access_token = response_data['access_token']
-            self._credentials.refresh_token = response_data['refresh_token']
+            response_data = AuthResponse(**await response.json())
+            self._credentials.access_token = response_data.access_token
+            self._credentials.refresh_token = response_data.refresh_token
             await self._repo.save_credentials(self._credentials)
