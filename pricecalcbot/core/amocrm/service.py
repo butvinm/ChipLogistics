@@ -24,7 +24,7 @@ class AmoCRMService(object):
 
     def __init__(
         self,
-        host: str,
+        api_url: str,
         credentials: Credentials,
         repo: AmoCRMRepository,
     ) -> None:
@@ -34,32 +34,32 @@ class AmoCRMService(object):
         Use `with_credentials` method to build service instance.
 
         Args:
-            host: AmoCRM account host.
+            api_url: AmoCRM account url.
             credentials: AmoCRM service credentials.
             repo: AmoCRM service data repository.
         """
         self._credentials = credentials
         self._repo = repo
-        self._session = ClientSession(base_url=host)
+        self._session = ClientSession(base_url=api_url)
 
     @classmethod
     @asynccontextmanager
     async def init(
         cls,
-        host: str,
+        api_url: str,
         repo: AmoCRMRepository,
     ) -> AsyncGenerator['AmoCRMService', None]:
         """Initialize AmoCRM service with credentials.
 
         Args:
-            host: AmoCRM account host.
+            api_url: AmoCRM account url.
             repo: AmoCRM service data repository.
 
         Yields:
             AmoCRM service instance.
         """
         credentials = await repo.get_credentials()
-        service = cls(host, credentials, repo)
+        service = cls(api_url, credentials, repo)
         try:
             yield service
         finally:

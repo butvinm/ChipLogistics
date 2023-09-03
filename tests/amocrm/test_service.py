@@ -53,19 +53,19 @@ def amo_repo(credentials: Credentials) -> AmoCRMRepository:
 
 @pytest.fixture(scope='module')
 async def amo_service(
-    amocrm_api_host: str,
+    amo_crm_url: str,
     amo_repo: AmoCRMRepository,
 ) -> AsyncGenerator[AmoCRMService, None]:
     """Return a service with a mock repository.
 
     Args:
-        amocrm_api_host: AmoCRM API host.
+        amo_crm_url: AmoCRM API url.
         amo_repo: Mock repository.
 
     Yields:
         Service with a mock repository.
     """
-    async with AmoCRMService.init(amocrm_api_host, amo_repo) as service:
+    async with AmoCRMService.init(amo_crm_url, amo_repo) as service:
         yield service
 
 

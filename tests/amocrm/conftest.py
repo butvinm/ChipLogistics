@@ -12,13 +12,13 @@ load_dotenv()
 
 
 @pytest.fixture(scope='package')
-def amocrm_api_host() -> str:
-    """Get AmoCRM API host.
+def amo_crm_url() -> str:
+    """Get AmoCRM API url.
 
     Returns:
-        AmoCRM API host.
+        AmoCRM API url.
     """
-    return environ['AMOCRM_API_HOST']
+    return environ['AMOCRM_API_URL']
 
 
 @pytest.fixture(scope='package')
