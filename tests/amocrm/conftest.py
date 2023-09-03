@@ -11,7 +11,7 @@ from pricecalcbot.models.amocrm import Credentials
 load_dotenv()
 
 
-@pytest.fixture
+@pytest.fixture(scope='package')
 def amocrm_api_host() -> str:
     """Get AmoCRM API host.
 
@@ -21,7 +21,7 @@ def amocrm_api_host() -> str:
     return environ['AMOCRM_API_HOST']
 
 
-@pytest.fixture
+@pytest.fixture(scope='package')
 def amocrm_auth_code() -> str:
     """Get AmoCRM authorization code.
 
@@ -31,7 +31,7 @@ def amocrm_auth_code() -> str:
     return environ['AMOCRM_AUTH_CODE']
 
 
-@pytest.fixture
+@pytest.fixture(scope='package')
 def credentials() -> Credentials:
     """Get test credentials.
 
