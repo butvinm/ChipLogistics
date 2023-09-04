@@ -123,3 +123,26 @@ async def test_upload_file(
         file_uuid=file_uuid,
     )
     assert updated_file_uuid == file_uuid
+
+
+async def test_attach_file_to_customer(
+    amo_service: AmoCRMService,
+) -> None:
+    """Test the attach_file_to_customer method.
+
+    Args:
+        amo_service: Service with a mock repository.
+    """
+    file_data = b'0' * 1024
+    file_uuid = await amo_service.upload_file(
+        'test_file.txt',
+        file_data,
+    )
+
+    customers = await amo_service.find_customers()
+    customer = customers.pop(0)
+
+    await amo_service.attach_file_to_customer(
+        customer_id=customer.id,
+        file_uuid=file_uuid,
+    )

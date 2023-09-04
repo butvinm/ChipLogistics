@@ -138,6 +138,26 @@ class AmoCRMService(object):  # noqa: WPS214
 
             return response_data.customers
 
+    async def attach_file_to_customer(
+        self,
+        customer_id: int,
+        file_uuid: str,
+    ) -> None:
+        """Attach file to customer.
+
+        Args:
+            customer_id: Customer identifier.
+            file_uuid: File identifier.
+        """
+        async with self._session.put(
+            '/api/v4/customers/{customer_id}/files'.format(
+                customer_id=customer_id,
+            ),
+            json=[{'file_uuid': file_uuid}],
+            headers=self._get_auth_header(),
+        ) as response:
+            response.raise_for_status()
+
     async def upload_file(
         self,
         file_name: str,
