@@ -101,3 +101,25 @@ async def test_find_customers(
 
     customers = await amo_service.find_customers('Not Exist')
     assert not customers
+
+
+async def test_upload_file(
+    amo_service: AmoCRMService,
+) -> None:
+    """Test the upload_file method.
+
+    Args:
+        amo_service: Service with a mock repository.
+    """
+    file_data = b'0' * 1024
+    file_uuid = await amo_service.upload_file(
+        'test_file.txt',
+        file_data,
+    )
+
+    updated_file_uuid = await amo_service.upload_file(
+        'test_file.txt',
+        file_data + b'0',
+        file_uuid=file_uuid,
+    )
+    assert updated_file_uuid == file_uuid
