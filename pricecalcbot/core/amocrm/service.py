@@ -79,7 +79,7 @@ class AmoCRMService(object):  # noqa: WPS214
         """
         async with self._session.post(
             '/oauth2/access_token',
-            data={
+            json={
                 'grant_type': 'authorization_code',
                 'client_id': self._credentials.client_id,
                 'client_secret': self._credentials.client_secret,
@@ -100,7 +100,7 @@ class AmoCRMService(object):  # noqa: WPS214
         """
         async with self._session.post(
             '/oauth2/access_token',
-            data={
+            json={
                 'grant_type': 'refresh_token',
                 'client_id': self._credentials.client_id,
                 'client_secret': self._credentials.client_secret,
@@ -124,7 +124,8 @@ class AmoCRMService(object):  # noqa: WPS214
             List of found customers.
         """
         async with self._session.get(
-            '/api/v4/customers?query={query}'.format(query=query),
+            '/api/v4/customers',
+            params={'query': query},
             headers=self._get_auth_header(),
         ) as response:
             response.raise_for_status()
