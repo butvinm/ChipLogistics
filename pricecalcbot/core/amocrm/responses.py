@@ -5,7 +5,7 @@ from typing import Any
 
 from pydantic import BaseModel, ValidationError
 
-from pricecalcbot.models.amocrm import Customer
+from pricecalcbot.models.amocrm import Contact
 
 
 class AuthResponse(BaseModel):
@@ -32,23 +32,23 @@ class AuthResponse(BaseModel):
         return AuthResponse(**json)
 
 
-class CustomersResponse(BaseModel):
-    """Response with customers list."""
+class ContactsResponse(BaseModel):
+    """Response with contacts list."""
 
     page: int
-    customers: list[Customer]
+    contacts: list[Contact]
 
     @classmethod
-    def from_json(cls, json: dict[str, Any]) -> 'CustomersResponse':
+    def from_json(cls, json: dict[str, Any]) -> 'ContactsResponse':
         """Build response object from json data.
 
-        See https://www.amocrm.ru/developers/content/crm_platform/customers-api#customers-list for response format reference. # noqa: E501
+        See https://www.amocrm.ru/developers/content/crm_platform/contacts-api#contacts-list for response format reference. # noqa: E501
 
         Args:
             json: Response json data.
 
         Returns:
-            Customers response model.
+            Contacts response model.
 
         Raises:
             ValidationError: If json data invalid.
@@ -57,11 +57,11 @@ class CustomersResponse(BaseModel):
         if not page:
             raise ValidationError('Page field missed.')
 
-        customers = json.get('_embedded', {}).get('customers')
-        if not customers:
+        contacts = json.get('_embedded', {}).get('contacts')
+        if not contacts:
             raise ValidationError('Custoemrs field missed.')
 
-        return CustomersResponse(page=page, customers=customers)
+        return ContactsResponse(page=page, contacts=contacts)
 
 
 class FileSessionResponse(BaseModel):

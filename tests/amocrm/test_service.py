@@ -82,25 +82,25 @@ async def test_authorize(
     assert amo_service._credentials.refresh_token is not None
 
 
-async def test_find_customers(
+async def test_find_contacts(
     amo_service: AmoCRMService,
 ) -> None:
-    """Test the find_customers method.
+    """Test the find_contacts method.
 
     Args:
         amo_service: Service with a mock repository.
     """
-    customers = await amo_service.find_customers()
-    assert len(customers) == 3
+    contacts = await amo_service.find_contacts()
+    assert len(contacts) == 3
 
-    customers = await amo_service.find_customers('John')
-    assert len(customers) == 1
+    contacts = await amo_service.find_contacts('John')
+    assert len(contacts) == 1
 
-    customers = await amo_service.find_customers('jOhN')
-    assert len(customers) == 1
+    contacts = await amo_service.find_contacts('jOhN')
+    assert len(contacts) == 1
 
-    customers = await amo_service.find_customers('Not Exist')
-    assert not customers
+    contacts = await amo_service.find_contacts('Not Exist')
+    assert not contacts
 
 
 async def test_upload_file(
@@ -125,10 +125,10 @@ async def test_upload_file(
     assert updated_file_uuid == file_uuid
 
 
-async def test_attach_file_to_customer(
+async def test_attach_file_to_contact(
     amo_service: AmoCRMService,
 ) -> None:
-    """Test the attach_file_to_customer method.
+    """Test the attach_file_to_contact method.
 
     Args:
         amo_service: Service with a mock repository.
@@ -139,10 +139,10 @@ async def test_attach_file_to_customer(
         file_data,
     )
 
-    customers = await amo_service.find_customers()
-    customer = customers.pop(0)
+    contacts = await amo_service.find_contacts()
+    contact = contacts.pop(0)
 
-    await amo_service.attach_file_to_customer(
-        customer_id=customer.id,
+    await amo_service.attach_file_to_contact(
+        contact_id=contact.id,
         file_uuid=file_uuid,
     )

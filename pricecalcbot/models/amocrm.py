@@ -18,10 +18,10 @@ class Credentials(BaseModel):
     redirect_uri: str
 
 
-class Customer(BaseModel):
-    """AmoCRM customer model.
+class Contact(BaseModel):
+    """AmoCRM contact model.
 
-    See https://www.amocrm.ru/developers/content/crm_platform/customers-api
+    See https://www.amocrm.ru/developers/content/crm_platform/contacts-api
     """
 
     id: int

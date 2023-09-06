@@ -13,12 +13,12 @@ from aiohttp import ClientSession
 from pricecalcbot.core.amocrm.repo import AmoCRMRepository
 from pricecalcbot.core.amocrm.responses import (
     AuthResponse,
-    CustomersResponse,
+    ContactsResponse,
     FileSessionResponse,
     FileUploadResponse,
     PartUploadResponse,
 )
-from pricecalcbot.models.amocrm import Credentials, Customer
+from pricecalcbot.models.amocrm import Contact, Credentials
 
 
 class AmoCRMService(object):  # noqa: WPS214
@@ -114,44 +114,44 @@ class AmoCRMService(object):  # noqa: WPS214
             self._credentials.refresh_token = response_data.refresh_token
             await self._repo.save_credentials(self._credentials)
 
-    async def find_customers(self, query: str = '') -> list[Customer]:
-        """Find customers by fields data.
+    async def find_contacts(self, query: str = '') -> list[Contact]:
+        """Find contacts by fields data.
 
         Args:
             query: Value to search in fields.
 
         Returns:
-            List of found customers.
+            List of found contacts.
         """
         async with self._session.get(
-            '/api/v4/customers',
+            '/api/v4/contacts',
             params={'query': query},
             headers=self._get_auth_header(),
         ) as response:
             response.raise_for_status()
             if response.status == HTTPStatus.OK:
-                response_data = CustomersResponse.from_json(
+                response_data = ContactsResponse.from_json(
                     json=await response.json(),
                 )
             else:
-                response_data = CustomersResponse(page=0, customers=[])
+                response_data = ContactsResponse(page=0, contacts=[])
 
-            return response_data.customers
+            return response_data.contacts
 
-    async def attach_file_to_customer(
+    async def attach_file_to_contact(
         self,
-        customer_id: int,
+        contact_id: int,
         file_uuid: str,
     ) -> None:
-        """Attach file to customer.
+        """Attach file to contact.
 
         Args:
-            customer_id: Customer identifier.
+            contact_id: Contact identifier.
             file_uuid: File identifier.
         """
         async with self._session.put(
-            '/api/v4/customers/{customer_id}/files'.format(
-                customer_id=customer_id,
+            '/api/v4/contacts/{contact_id}/files'.format(
+                contact_id=contact_id,
             ),
             json=[{'file_uuid': file_uuid}],
             headers=self._get_auth_header(),
