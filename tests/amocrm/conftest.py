@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 from pricecalcbot.models.amocrm import Credentials
 
-load_dotenv()
+load_dotenv('./tests/amocrm/.env')
 
 
 @pytest.fixture(scope='package')
