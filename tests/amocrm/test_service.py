@@ -1,7 +1,7 @@
 """Test AMoCRMService class."""
 
 
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Generator
 
 import pytest
 
@@ -37,18 +37,25 @@ class MockAmoCRMRepository(AmoCRMRepository):
         """
         self._credentials = credentials
 
+    async def close(self) -> None:
+        """Delete credentials"""
+        self._credentials = None
+
 
 @pytest.fixture(scope='module')
-def amo_repo(credentials: Credentials) -> AmoCRMRepository:
+async def amo_repo(
+    credentials: Credentials,
+) -> AsyncGenerator[AmoCRMRepository, None]:
     """Return a mock repository.
 
     Args:
         credentials: Test credentials.
 
-    Returns:
+    Yields:
         Mock repository.
     """
-    return MockAmoCRMRepository(credentials)
+    async with MockAmoCRMRepository(credentials) as repo:
+        yield repo
 
 
 @pytest.fixture(scope='module')

@@ -1,7 +1,7 @@
 """AmoCRM Service data repository interface."""
 
 
-from typing import Protocol
+from typing import Any, Protocol
 
 from pricecalcbot.models.amocrm import Credentials
 
@@ -22,3 +22,25 @@ class AmoCRMRepository(Protocol):
         Args:
             credentials: AmoCRM integration credentials.
         """
+
+    async def close(self) -> None:
+        """Close repository and clean resources."""
+
+    async def __aenter__(self) -> 'AmoCRMRepository':
+        """Enter context manager and return repo instance.
+
+        Args:
+            Initialized instance.
+
+        Returns:
+            Initialized instance.
+        """
+        return self
+
+    async def __aexit__(self, *args: Any) -> None:
+        """Clean resources.
+
+        Args:
+            args: Exceptions info, if exception was caused.
+        """
+        await self.close()
