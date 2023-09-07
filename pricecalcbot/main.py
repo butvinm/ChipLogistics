@@ -5,20 +5,6 @@ services and dependencies initialized there.
 """
 
 
-from fastapi import FastAPI
-
-from pricecalcbot.api.routers.root import router as root_router
-
-
-def init_app() -> FastAPI:
-    """Initialize FastAPI application.
-
-    Returns:
-        Application instance.
-    """
-    app = FastAPI()
-    app.include_router(root_router)
-    return app
-
+from pricecalcbot.api.factory import init_app
 
 app = init_app()
