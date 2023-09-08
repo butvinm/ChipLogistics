@@ -6,4 +6,10 @@ micros:
     primary: true
     public: true
     run: uvicorn pricecalcbot.main:app
-    dev: poetry run uvicorn pricecalcbot.main:app
+    dev: uvicorn pricecalcbot.main:app
+    presets:
+      env:
+        - name: BOT_TOKEN
+          description: Token of telegram bot
+        - name: BOT_SECRET
+          description: telegram webhook secret
