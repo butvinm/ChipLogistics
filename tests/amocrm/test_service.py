@@ -1,7 +1,7 @@
 """Test AMoCRMService class."""
 
 
-from typing import AsyncGenerator, Generator
+from typing import AsyncGenerator
 
 import pytest
 
@@ -38,8 +38,8 @@ class MockAmoCRMRepository(AmoCRMRepository):
         self._credentials = credentials
 
     async def close(self) -> None:
-        """Delete credentials"""
-        self._credentials = None
+        """Delete credentials."""
+        self._credentials = None  # type: ignore
 
 
 @pytest.fixture(scope='module')
