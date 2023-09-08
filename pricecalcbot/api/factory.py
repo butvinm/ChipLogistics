@@ -3,8 +3,8 @@
 from aiogram import Bot, Dispatcher
 from fastapi import FastAPI
 
+from pricecalcbot.api.routers.amocrm.root import router as amocrm_router
 from pricecalcbot.api.routers.bot.root import router as bot_router
-from pricecalcbot.api.routers.root import router as root_router
 from pricecalcbot.api.stubs.bot import BotStub, DispatcherStub, SecretStub
 
 
@@ -31,6 +31,6 @@ def init_app(
         DispatcherStub: lambda: dispatcher,
         SecretStub: lambda: webhook_secret,
     })
-    app.include_router(root_router)
+    app.include_router(amocrm_router)
     app.include_router(bot_router)
     return app
