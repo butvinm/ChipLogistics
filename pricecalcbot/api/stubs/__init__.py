@@ -1,0 +1,1 @@
+"""Stubs for application dependencies."""
