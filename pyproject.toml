@@ -12,7 +12,7 @@ aiohttp = "^3.8.5"
 fastapi = "^0.103.1"
 uvicorn = "^0.23.2"
 aiogram = ">=3"
-aiogram_deta = { git = "https://github.com/butvinm/aiogram_deta.git"}
+aiogram_deta = { git = "https://github.com/butvinm/aiogram_deta.git", branch = "flexible-deps"}
 
 [tool.poetry.group.dev.dependencies]
 wemake-python-styleguide = "^0.18.0"
