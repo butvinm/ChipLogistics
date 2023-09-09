@@ -8,8 +8,9 @@ from aiogram.types import Update
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from pydantic import SecretStr
 
-from pricecalcbot.api.stubs.bot import BotStub, DispatcherStub, SecretStub
+from pricecalcbot.api.routers.bot.deps import get_bot, get_dispatcher
 from pricecalcbot.bot.handler_result import HandlerResult
+from pricecalcbot.config import get_bot_secret
 
 router = APIRouter(prefix='/webhook')
 
@@ -21,9 +22,9 @@ SecretHeader = Header(alias='X-Telegram-Bot-Api-Secret-Token')
 async def handle_update(
     update: Update,
     secret: Annotated[SecretStr, SecretHeader],
-    bot: Annotated[Bot, Depends(BotStub)],
-    dispatcher: Annotated[Dispatcher, Depends(DispatcherStub)],
-    expected_secret: Annotated[str, Depends(SecretStub)],
+    bot: Annotated[Bot, Depends(get_bot)],
+    dispatcher: Annotated[Dispatcher, Depends(get_dispatcher)],
+    expected_secret: Annotated[str, Depends(get_bot_secret)],
 ) -> HandlerResult:
     """Handle telegram update and propagate to aiogram dispatcher.
 
