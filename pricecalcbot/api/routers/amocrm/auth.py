@@ -50,7 +50,19 @@ async def authorize(
     """Authorize application with provided auth code.
 
     Args:
-        auth_code (str): _description_
-        service (Annotated[AmoCRMService, Depends): _description_
+        auth_code: AmoCRM "Integration" auth code.
+        service: AmoCRM service.
     """
     await service.authorize(auth_code)
+
+
+@router.patch('/')
+async def refresh_token(
+    service: Annotated[AmoCRMService, Depends(get_amocrm_service)],
+) -> None:
+    """Refresh authorization token.
+
+    Args:
+        service: AmoCRM service.
+    """
+    await service.refresh_access_token()
