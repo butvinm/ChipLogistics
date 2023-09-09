@@ -4,13 +4,18 @@ See "Redirect URL" at https://www.amocrm.ru/developers/content/oauth/step-by-ste
 """
 
 
-from fastapi import APIRouter
+from typing import Annotated
+
+from fastapi import APIRouter, Depends
+
+from pricecalcbot.api.routers.amocrm.deps import get_amocrm_service
+from pricecalcbot.core.amocrm.service import AmoCRMService
 
 router = APIRouter(prefix='/auth')
 
 
 @router.get('/')
-def handle_authorization(
+async def handle_authorization(
     code: str,
     referer: str,
     state: str,
@@ -35,3 +40,17 @@ def handle_authorization(
             1 - from Russian amocrm.ru account, \
             2 - from global amocrm.com/kommo.com account.
     """
+
+
+@router.post('/')
+async def authorize(
+    auth_code: str,
+    service: Annotated[AmoCRMService, Depends(get_amocrm_service)],
+) -> None:
+    """Authorize application with provided auth code.
+
+    Args:
+        auth_code (str): _description_
+        service (Annotated[AmoCRMService, Depends): _description_
+    """
+    await service.authorize(auth_code)
