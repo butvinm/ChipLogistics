@@ -50,4 +50,4 @@ class DetaAmoCRMRepository(AmoCRMRepository):
 
     async def close(self) -> None:
         """Close Deta Base connection."""
-        self._base.close()
+        await self._base.close()
