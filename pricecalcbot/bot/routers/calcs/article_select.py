@@ -22,6 +22,7 @@ from pricecalcbot.bot.views.calcs.article_select import (
     send_duty_fee_ratio_request,
     send_name_request,
 )
+from pricecalcbot.bot.views.calcs.item_data import send_item_count_request
 from pricecalcbot.core.articles.service import ArticlesService
 from pricecalcbot.models.articles import ArticleInfo
 
@@ -93,7 +94,7 @@ async def handle_article(
         duty_fee_ratio=str(article.duty_fee_ratio),
     )
     await state.set_state(CalculationsState.wait_item_count)
-    # send_count_request
+    await send_item_count_request(message)
     return Ok(extra={
         'name': article.name,
         'duty_fee_ratio': article.duty_fee_ratio,
@@ -184,7 +185,7 @@ async def handle_duty_fee_ratio(
 
     context = await state.get_data()
     article = ArticleInfo(id=None, **context)
-    # send_count_request
+    await send_item_count_request(message)
     return Ok(extra={
         'name': article.name,
         'duty_fee_ratio': article.duty_fee_ratio,

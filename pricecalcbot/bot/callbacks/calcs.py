@@ -19,3 +19,7 @@ class SelectArticleCallback(CallbackData, prefix='calcs/article/select'):
 
 class ManualArticleCallback(CallbackData, prefix='calcs/article/manual'):
     """Start manual input of article data."""
+
+
+class OpenContactSelect(CallbackData, prefix='calcs/contact/open'):
+    """Open contact select menu."""

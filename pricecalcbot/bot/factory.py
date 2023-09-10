@@ -35,9 +35,9 @@ def init_dispatcher(deta: Deta) -> Dispatcher:
     """
     dispatcher: Dispatcher = create_dispatcher(deta=deta)
     dispatcher.include_routers(
+        start_router,
         articles_router,
         calcs_router,
-        start_router,
         menu_router,
     )
     dispatcher.callback_query.middleware(CallbackAnswerMiddleware())

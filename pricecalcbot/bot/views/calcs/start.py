@@ -5,12 +5,12 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 from pricecalcbot.bot.callbacks.calcs import AddItemCallback
 from pricecalcbot.bot.callbacks.menu import OpenMenuCallback
-from pricecalcbot.bot.texts.calcs import ADD_ITEM, BACK_TO_MENU, START
+from pricecalcbot.bot.texts.calcs import ADD_ITEM_BTN, BACK_TO_MENU, START
 
 add_item_btns = [
     [
         InlineKeyboardButton(
-            text=ADD_ITEM,
+            text=ADD_ITEM_BTN,
             callback_data=AddItemCallback().pack(),
         ),
     ],
