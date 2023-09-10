@@ -73,6 +73,9 @@ class DetaArticlesRepository(ArticlesRepository):
             Found article or None.
         """
         article_data = await self._base.get(article_id)
+        if article_data is None:
+            return article_data
+
         return ArticleInfo(**article_data)
 
     async def delete_article(self, article_id: str) -> bool:
