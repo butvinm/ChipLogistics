@@ -8,6 +8,7 @@ from typing import Optional
 from deta import Deta
 
 from pricecalcbot.core.articles.repo import ArticlesRepository
+from pricecalcbot.deta.models import model_dump
 from pricecalcbot.models.articles import ArticleInfo
 
 
@@ -40,13 +41,11 @@ class DetaArticlesRepository(ArticlesRepository):
             Created or updated article.
         """
         if article.id is None:
-            article = ArticleInfo(
-                id=self._generate_id(),
-                **article.model_dump(),
-            )
+            article = ArticleInfo(**article.model_dump())
+            article.id = self._generate_id()
 
         article_data = await self._base.put(
-            data=article.model_dump(),
+            data=model_dump(article),
             key=article.id,
         )
         return ArticleInfo(**article_data)
