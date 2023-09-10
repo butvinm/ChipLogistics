@@ -5,6 +5,7 @@ Contains logic for managing articles list, calculate articles items price.
 
 
 from decimal import Decimal
+from typing import Optional
 
 from pricecalcbot.core.articles import calcs
 from pricecalcbot.core.articles.repo import ArticlesRepository
@@ -27,7 +28,10 @@ class ArticlesService(object):
         """
         self._repo = repo
 
-    async def find_articles(self, query: str) -> list[ArticleInfo]:
+    async def find_articles(
+        self,
+        query: Optional[str] = None,
+    ) -> list[ArticleInfo]:
         """Find articles by name.
 
         Search is case and word position insensitive.
@@ -36,12 +40,15 @@ class ArticlesService(object):
         'foo' would find ['fOo', 'bar foo'].
 
         Args:
-            query: Name query.
+            query: Name query. If None, all articles returned.
 
         Returns:
             List of found articles.
         """
         articles = await self._repo.get_articles()
+        if query is None:
+            return articles
+
         return [
             article for article in articles
             if query.lower() in article.name.lower()
