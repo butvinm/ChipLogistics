@@ -3,21 +3,21 @@
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
-from pricecalcbot.bot.callbacks.articles import ArticlesOpenMenuCallback
-from pricecalcbot.bot.callbacks.calcs import CalcsOpenMenuCallback
+from pricecalcbot.bot.callbacks.articles import OpenArticlesMenuCallback
+from pricecalcbot.bot.callbacks.calcs import StartCalcsCallback
 from pricecalcbot.bot.texts.menu import OPEN_ARTICLES_BTN, OPEN_CALC_BTN, TITLE
 
 menu_kb = InlineKeyboardMarkup(inline_keyboard=[
     [
         InlineKeyboardButton(
             text=OPEN_ARTICLES_BTN,
-            callback_data=ArticlesOpenMenuCallback().pack(),
+            callback_data=OpenArticlesMenuCallback().pack(),
         ),
     ],
     [
         InlineKeyboardButton(
             text=OPEN_CALC_BTN,
-            callback_data=CalcsOpenMenuCallback().pack(),
+            callback_data=StartCalcsCallback().pack(),
         ),
     ],
 ])

@@ -3,19 +3,19 @@
 from aiogram.filters.callback_data import CallbackData
 
 
-class ArticlesOpenMenuCallback(CallbackData, prefix='articles/open'):
-    """Callback for opening articles management menu."""
+class OpenArticlesMenuCallback(CallbackData, prefix='articles/open'):
+    """Open articles management menu."""
 
 
-class ArticlesOpenListCallback(CallbackData, prefix='articles/list/open'):
-    """Callback for opening articles list."""
+class OpenArticlesListCallback(CallbackData, prefix='articles/list/open'):
+    """Open articles list."""
 
 
-class ArticlesCreateCallback(CallbackData, prefix='articles/create'):
-    """Callback for creating new article."""
+class CreateArticleCallback(CallbackData, prefix='articles/create'):
+    """Start creating of the new article."""
 
 
-class ArticlesOpenArticleCallback(
+class OpenArticleCallback(
     CallbackData,
     prefix='articles/list/article',
 ):
@@ -24,7 +24,7 @@ class ArticlesOpenArticleCallback(
     article_id: str
 
 
-class ArticlesDeleteArticleCallback(
+class DeleteArticleCallback(
     CallbackData,
     prefix='articles/list/article/delete',
 ):

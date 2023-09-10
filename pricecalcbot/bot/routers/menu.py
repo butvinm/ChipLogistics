@@ -4,7 +4,7 @@
 from aiogram import F, Router
 from aiogram.types import CallbackQuery, Message
 
-from pricecalcbot.bot.callbacks.menu import MenuOpenCallback
+from pricecalcbot.bot.callbacks.menu import OpenMenuCallback
 from pricecalcbot.bot.handler_result import HandlerResult, Ok
 from pricecalcbot.bot.views.menu import show_menu
 
@@ -12,7 +12,7 @@ router = Router(name='menu')
 
 
 @router.callback_query(
-    MenuOpenCallback.filter(),
+    OpenMenuCallback.filter(),
     F.message.as_('message'),
 )
 async def open_menu(

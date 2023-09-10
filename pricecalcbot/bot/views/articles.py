@@ -4,13 +4,13 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 from pricecalcbot.bot.callbacks.articles import (
-    ArticlesCreateCallback,
-    ArticlesDeleteArticleCallback,
-    ArticlesOpenArticleCallback,
-    ArticlesOpenListCallback,
-    ArticlesOpenMenuCallback,
+    CreateArticleCallback,
+    DeleteArticleCallback,
+    OpenArticleCallback,
+    OpenArticlesListCallback,
+    OpenArticlesMenuCallback,
 )
-from pricecalcbot.bot.callbacks.menu import MenuOpenCallback
+from pricecalcbot.bot.callbacks.menu import OpenMenuCallback
 from pricecalcbot.bot.texts.articles import (
     ARTICLE_DESCRIPTION,
     BACK_TO_ARTICLES_MENU,
@@ -29,7 +29,7 @@ back_to_menu_btns = [
     [
         InlineKeyboardButton(
             text=BACK_TO_MENU,
-            callback_data=MenuOpenCallback().pack(),
+            callback_data=OpenMenuCallback().pack(),
         ),
     ],
 ]
@@ -37,7 +37,7 @@ back_to_articles_menu_kb = [
     [
         InlineKeyboardButton(
             text=BACK_TO_ARTICLES_MENU,
-            callback_data=ArticlesOpenMenuCallback().pack(),
+            callback_data=OpenArticlesMenuCallback().pack(),
         ),
     ],
 ]
@@ -45,7 +45,7 @@ back_to_list_btns = [
     [
         InlineKeyboardButton(
             text=BACK_TO_LIST,
-            callback_data=ArticlesOpenListCallback().pack(),
+            callback_data=OpenArticlesListCallback().pack(),
         ),
     ],
 ]
@@ -56,13 +56,13 @@ articles_menu_kb = InlineKeyboardMarkup(
         [
             InlineKeyboardButton(
                 text=OPEN_LIST_BTN,
-                callback_data=ArticlesOpenListCallback().pack(),
+                callback_data=OpenArticlesListCallback().pack(),
             ),
         ],
         [
             InlineKeyboardButton(
                 text=CREATE_BTN,
-                callback_data=ArticlesCreateCallback().pack(),
+                callback_data=CreateArticleCallback().pack(),
             ),
         ],
     ] + back_to_menu_btns,
@@ -97,7 +97,7 @@ def build_articles_list_kb(
             [
                 InlineKeyboardButton(
                     text=article.name,
-                    callback_data=ArticlesOpenArticleCallback(
+                    callback_data=OpenArticleCallback(
                         article_id=article.id,
                     ).pack(),
                 ),
@@ -138,7 +138,7 @@ def build_article_kb(article_id: str) -> InlineKeyboardMarkup:
             [
                 InlineKeyboardButton(
                     text=DELETE_BTN,
-                    callback_data=ArticlesDeleteArticleCallback(
+                    callback_data=DeleteArticleCallback(
                         article_id=article_id,
                     ).pack(),
                 ),
@@ -193,3 +193,5 @@ async def show_deleted_article(message: Message) -> None:
         text=DELETED_MESSAGE,
         reply_markup=deleted_article_kb,
     )
+
+

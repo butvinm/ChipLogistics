@@ -5,10 +5,10 @@ from aiogram import F, Router
 from aiogram.types import CallbackQuery, Message
 
 from pricecalcbot.bot.callbacks.articles import (
-    ArticlesDeleteArticleCallback,
-    ArticlesOpenArticleCallback,
-    ArticlesOpenListCallback,
-    ArticlesOpenMenuCallback,
+    DeleteArticleCallback,
+    OpenArticleCallback,
+    OpenArticlesListCallback,
+    OpenArticlesMenuCallback,
 )
 from pricecalcbot.bot.handler_result import Err, HandlerResult, Ok
 from pricecalcbot.bot.views.articles import (
@@ -23,7 +23,7 @@ router = Router(name='articles')
 
 
 @router.callback_query(
-    ArticlesOpenMenuCallback.filter(),
+    OpenArticlesMenuCallback.filter(),
     F.message.as_('message'),
 )
 async def open_menu(
@@ -44,7 +44,7 @@ async def open_menu(
 
 
 @router.callback_query(
-    ArticlesOpenListCallback.filter(),
+    OpenArticlesListCallback.filter(),
     F.message.as_('message'),
 )
 async def open_articles_list(
@@ -68,12 +68,12 @@ async def open_articles_list(
 
 
 @router.callback_query(
-    ArticlesOpenArticleCallback.filter(),
+    OpenArticleCallback.filter(),
     F.message.as_('message'),
 )
 async def open_article(
     callback_query: CallbackQuery,
-    callback_data: ArticlesOpenArticleCallback,
+    callback_data: OpenArticleCallback,
     message: Message,
     articles_service: ArticlesService,
 ) -> HandlerResult:
@@ -106,12 +106,12 @@ async def open_article(
 
 
 @router.callback_query(
-    ArticlesDeleteArticleCallback.filter(),
+    DeleteArticleCallback.filter(),
     F.message.as_('message'),
 )
 async def delete_article(
     callback_query: CallbackQuery,
-    callback_data: ArticlesDeleteArticleCallback,
+    callback_data: DeleteArticleCallback,
     message: Message,
     articles_service: ArticlesService,
 ) -> HandlerResult:

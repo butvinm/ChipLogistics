@@ -4,5 +4,5 @@
 from aiogram.filters.callback_data import CallbackData
 
 
-class MenuOpenCallback(CallbackData, prefix='menu/open'):
-    """Menu open callback."""
+class OpenMenuCallback(CallbackData, prefix='menu/open'):
+    """Open main menu."""
