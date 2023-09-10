@@ -8,7 +8,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
-from pricecalcbot.api.routers.amocrm.deps import get_amocrm_service
+from pricecalcbot.api.routers.deps import get_amocrm_service
 from pricecalcbot.core.amocrm.service import AmoCRMService
 
 router = APIRouter(prefix='/auth')

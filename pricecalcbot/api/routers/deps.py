@@ -1,4 +1,4 @@
-"""AmoCRM routers dependencies."""
+"""AmoCRM dependencies."""
 
 
 from typing import Annotated, AsyncGenerator
