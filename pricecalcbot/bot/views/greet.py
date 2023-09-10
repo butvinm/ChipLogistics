@@ -1,8 +1,7 @@
 """Greeting view."""
 
 
-from aiogram import Bot
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 from pricecalcbot.bot.callbacks.menu import MenuOpenCallback
 from pricecalcbot.bot.texts.greet import GREET, OPEN_MENU_BTN
@@ -17,15 +16,13 @@ greet_kb = InlineKeyboardMarkup(inline_keyboard=[
 ])
 
 
-async def greet(bot: Bot, chat_id: int) -> None:
+async def greet(message: Message) -> None:
     """Greet user.
 
     Args:
-        bot: Bot instance.
-        chat_id: Chat id.
+        message: Message. Can be used to answer, modify or get user info.
     """
-    await bot.send_message(
-        chat_id,
+    await message.answer(
         text=GREET,
         reply_markup=greet_kb,
     )

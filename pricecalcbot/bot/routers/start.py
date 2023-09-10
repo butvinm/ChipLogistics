@@ -1,7 +1,7 @@
 """Start router."""
 
 
-from aiogram import Bot, Router
+from aiogram import Router
 from aiogram.filters import CommandStart
 from aiogram.types.message import Message
 
@@ -12,15 +12,14 @@ router = Router(name='start')
 
 
 @router.message(CommandStart())
-async def start(message: Message, bot: Bot) -> HandlerResult:
+async def start(message: Message) -> HandlerResult:
     """Greet user.
 
     Args:
         message: `/start` command.
-        bot: Bot instance.
 
     Returns:
         Always success.
     """
-    await greet(bot, message.chat.id)
+    await greet(message)
     return Ok()

@@ -1,8 +1,7 @@
 """Articles menu views."""
 
 
-from aiogram import Bot
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 from pricecalcbot.bot.callbacks.articles import (
     ArticlesCreateCallback,
@@ -38,15 +37,13 @@ menu_kb = InlineKeyboardMarkup(inline_keyboard=[
 ])
 
 
-async def show_menu(bot: Bot, chat_id: int) -> None:
+async def show_menu(message: Message) -> None:
     """Show articles management menu.
 
     Args:
-        bot: Bot instance.
-        chat_id: Chat id.
+        message: Message. Can be used to answer, modify or get user info.
     """
-    await bot.send_message(
-        chat_id,
+    await message.answer(
         text=TITLE,
         reply_markup=menu_kb,
     )
@@ -78,20 +75,17 @@ def build_articles_list_kb(
 
 
 async def show_articles_list(
-    bot: Bot,
-    chat_id: int,
+    message: Message,
     articles_service: ArticlesService,
 ) -> None:
     """Show articles list.
 
     Args:
-        bot: Bot instance.
-        chat_id: Chat id.
+        message: Message. Can be used to answer, modify or get user info.
         articles_service: Articles service.
     """
     articles = await articles_service.find_articles()
-    await bot.send_message(
-        chat_id,
+    await message.answer(
         text=LIST_TITLE,
         reply_markup=build_articles_list_kb(articles),
     )
@@ -134,16 +128,14 @@ def build_article_text(article: ArticleInfo) -> str:
 
 
 async def show_article_menu(
-    bot: Bot,
-    chat_id: int,
+    message: Message,
     article_id: str,
     articles_service: ArticlesService,
 ) -> bool:
     """Show article info and delete button.
 
     Args:
-        bot: Bot instance.
-        chat_id: Chat id.
+        message: Message. Can be used to answer, modify or get user info.
         article_id: Article id.
         articles_service: Articles service.
 
@@ -152,14 +144,12 @@ async def show_article_menu(
     """
     article = await articles_service.get_article(article_id)
     if article is None:
-        await bot.send_message(
-            chat_id,
+        await message.answer(
             text=ARTICLE_NOT_FOUND,
         )
         return False
 
-    await bot.send_message(
-        chat_id,
+    await message.answer(
         text=build_article_text(article),
         reply_markup=build_article_kb(article_id),
     )
