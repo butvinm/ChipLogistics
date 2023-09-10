@@ -5,6 +5,7 @@ from aiogram import F, Router
 from aiogram.types import CallbackQuery, Message
 
 from pricecalcbot.bot.callbacks.articles import (
+    ArticlesDeleteArticleCallback,
     ArticlesOpenArticleCallback,
     ArticlesOpenListCallback,
     ArticlesOpenMenuCallback,
@@ -13,6 +14,7 @@ from pricecalcbot.bot.handler_result import Err, HandlerResult, Ok
 from pricecalcbot.bot.views.articles import (
     show_article_menu,
     show_articles_list,
+    show_deleted_article,
     show_menu,
 )
 from pricecalcbot.core.articles.service import ArticlesService
@@ -79,7 +81,7 @@ async def open_article(
 
     Args:
         callback_query: Open menu query.
-        callback_data: Callback with article query.
+        callback_data: Callback with article id.
         message: Message where query from.
         articles_service: Articles service.
 
@@ -100,4 +102,40 @@ async def open_article(
         article_id=callback_data.article_id,
         article=article,
     )
+    return Ok()
+
+
+@router.callback_query(
+    ArticlesDeleteArticleCallback.filter(),
+    F.message.as_('message'),
+)
+async def delete_article(
+    callback_query: CallbackQuery,
+    callback_data: ArticlesDeleteArticleCallback,
+    message: Message,
+    articles_service: ArticlesService,
+) -> HandlerResult:
+    """Delete article.
+
+    Args:
+        callback_query: Open menu query.
+        callback_data: Callback with article id.
+        message: Message where query from.
+        articles_service: Articles service.
+
+    Returns:
+        Ok - Deleted successfully.
+        Err - Article not found.
+    """
+    deleted = await articles_service.delete_article(
+        article_id=callback_data.article_id,
+    )
+    if not deleted:
+        return Err(
+            message='Article {article_id} not found'.format(
+                article_id=callback_data.article_id,
+            ),
+        )
+
+    await show_deleted_article(message)
     return Ok()

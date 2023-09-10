@@ -13,6 +13,7 @@ from pricecalcbot.bot.texts.articles import (
     ARTICLE_DESCRIPTION,
     CREATE_BTN,
     DELETE_BTN,
+    DELETED_MESSAGE,
     LIST_TITLE,
     OPEN_LIST_BTN,
     TITLE,
@@ -140,3 +141,12 @@ async def show_article_menu(
         text=build_article_text(article),
         reply_markup=build_article_kb(article_id),
     )
+
+
+async def show_deleted_article(message: Message) -> None:
+    """Show article deleting message.
+
+    Args:
+        message: Message. Can be used to answer, modify or get user info.
+    """
+    await message.answer(text=DELETED_MESSAGE)

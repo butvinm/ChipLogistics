@@ -14,3 +14,5 @@ ARTICLE_DESCRIPTION = """<b>{name}</b>
 """
 
 DELETE_BTN = 'Удалить'
+
+DELETED_MESSAGE = 'Позиция удалена'
