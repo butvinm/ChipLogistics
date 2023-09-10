@@ -28,6 +28,17 @@ class ArticlesService(object):
         """
         self._repo = repo
 
+    async def get_article(self, article_id: str) -> Optional[ArticleInfo]:
+        """Get article by id.
+
+        Args:
+            article_id: Article id.
+
+        Returns:
+            Article if found.
+        """
+        return await self._repo.get_article(article_id)
+
     async def find_articles(
         self,
         query: Optional[str] = None,
