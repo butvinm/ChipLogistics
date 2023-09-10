@@ -13,14 +13,20 @@ from pricecalcbot.api.routers.bot.deps import (
     get_bot,
     get_dispatcher,
 )
+from pricecalcbot.api.routers.deps import get_amocrm_service
 from pricecalcbot.bot.handler_result import HandlerResult
 from pricecalcbot.config import get_bot_secret
+from pricecalcbot.core.amocrm.service import AmoCRMService
 from pricecalcbot.core.articles.service import ArticlesService
 
 router = APIRouter(prefix='/webhook')
 
 
 SecretHeader = Header(alias='X-Telegram-Bot-Api-Secret-Token')
+
+
+ArticlesServiceDep = Annotated[ArticlesService, Depends(get_articles_service)]
+AmoCRMServiceDep = Annotated[AmoCRMService, Depends(get_amocrm_service)]
 
 
 @router.post('/')
@@ -30,7 +36,8 @@ async def handle_update(  # noqa: WPS211
     bot: Annotated[Bot, Depends(get_bot)],
     dispatcher: Annotated[Dispatcher, Depends(get_dispatcher)],
     expected_secret: Annotated[str, Depends(get_bot_secret)],
-    service: Annotated[ArticlesService, Depends(get_articles_service)],
+    articles_service: ArticlesServiceDep,
+    amocrm_service: AmoCRMServiceDep,
 ) -> HandlerResult:
     """Handle telegram update and propagate to aiogram dispatcher.
 
@@ -44,7 +51,8 @@ async def handle_update(  # noqa: WPS211
         dispatcher: Aiogram dispatcher instance.
         expected_secret: Secret for request verification. See `config.py`.
         secret: Request secret.
-        service: Articles service.
+        articles_service: Articles service.
+        amocrm_service: AmoCRM service.
 
     Raises:
         HTTPException: 401 if secret is invalid.
@@ -61,5 +69,6 @@ async def handle_update(  # noqa: WPS211
     return await dispatcher.feed_update(  # type: ignore
         bot,
         update=update,
-        articles_service=service,
+        articles_service=articles_service,
+        amocrm_service=amocrm_service,
     )
