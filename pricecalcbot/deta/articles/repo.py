@@ -58,7 +58,10 @@ class DetaArticlesRepository(ArticlesRepository):
             Articles info.
         """
         articles_result = await self._base.fetch()
-        return articles_result.items  # type: ignore
+        return [
+            ArticleInfo(**article_data)
+            for article_data in articles_result.items
+        ]
 
     async def get_article(self, article_id: str) -> Optional[ArticleInfo]:
         """Get article from base by id.
@@ -69,7 +72,8 @@ class DetaArticlesRepository(ArticlesRepository):
         Returns:
             Found article or None.
         """
-        return await self._base.get(article_id)  # type: ignore
+        article_data = await self._base.get(article_id)
+        return ArticleInfo(**article_data)
 
     async def delete_article(self, article_id: str) -> bool:
         """Delete article from base.
