@@ -7,6 +7,7 @@ from aiogram_deta import create_dispatcher
 from deta import Deta
 
 from pricecalcbot.bot.routers.articles.root import router as articles_router
+from pricecalcbot.bot.routers.calcs.root import router as calcs_router
 from pricecalcbot.bot.routers.menu import router as menu_router
 from pricecalcbot.bot.routers.start import router as start_router
 
@@ -35,6 +36,7 @@ def init_dispatcher(deta: Deta) -> Dispatcher:
     dispatcher: Dispatcher = create_dispatcher(deta=deta)
     dispatcher.include_routers(
         articles_router,
+        calcs_router,
         start_router,
         menu_router,
     )
