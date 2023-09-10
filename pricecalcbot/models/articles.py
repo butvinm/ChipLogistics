@@ -2,8 +2,22 @@
 
 
 from decimal import Decimal
+from typing import Optional
 
 from pydantic import BaseModel, Field
+
+
+class ArticleInfo(BaseModel):
+    """Article information."""
+
+    # Article identifier
+    id: Optional[str]
+
+    # Name
+    name: str
+
+    # Duty fee ratio for price
+    duty_fee_ratio: Decimal = Field(default=1, ge=1)
 
 
 class ArticleItem(BaseModel):
