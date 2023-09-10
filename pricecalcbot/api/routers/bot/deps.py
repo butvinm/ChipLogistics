@@ -1,7 +1,7 @@
 """Aiogram routers dependencies."""
 
 
-from typing import Annotated, Optional
+from typing import Annotated, AsyncGenerator, Optional
 
 from aiogram import Bot, Dispatcher
 from deta import Deta
@@ -9,6 +9,9 @@ from fastapi import Depends
 
 from pricecalcbot.bot.factory import init_bot, init_dispatcher
 from pricecalcbot.config import get_bot_token
+from pricecalcbot.core.articles.repo import ArticlesRepository
+from pricecalcbot.core.articles.service import ArticlesService
+from pricecalcbot.deta.articles.repo import DetaArticlesRepository
 from pricecalcbot.deta.deta import get_deta
 
 
@@ -54,3 +57,32 @@ async def get_dispatcher(
         dispatcher = init_dispatcher(deta)  # noqa: WPS442
 
     return dispatcher
+
+
+async def get_articles_repo(
+    deta: Annotated[Deta, Depends(get_deta)],
+) -> AsyncGenerator[ArticlesRepository, None]:
+    """Get articles repository instance.
+
+    Args:
+        deta: Deta API.
+
+    Yields:
+        Articles repository.
+    """
+    async with DetaArticlesRepository(deta) as repo:
+        yield repo
+
+
+async def get_articles_service(
+    repo: Annotated[ArticlesRepository, Depends(get_articles_repo)],
+) -> ArticlesService:
+    """Get articles service instance.
+
+    Args:
+        repo: Articles repository.
+
+    Returns:
+        Articles service.
+    """
+    return ArticlesService(repo)
