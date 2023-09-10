@@ -5,11 +5,16 @@ from aiogram import Bot, F, Router
 from aiogram.types import CallbackQuery, Message
 
 from pricecalcbot.bot.callbacks.articles import (
+    ArticlesOpenArticleCallback,
     ArticlesOpenListCallback,
     ArticlesOpenMenuCallback,
 )
-from pricecalcbot.bot.handler_result import HandlerResult, Ok
-from pricecalcbot.bot.views.articles import show_articles_list, show_menu
+from pricecalcbot.bot.handler_result import Err, HandlerResult, Ok
+from pricecalcbot.bot.views.articles import (
+    show_article_menu,
+    show_articles_list,
+    show_menu,
+)
 from pricecalcbot.core.articles.service import ArticlesService
 
 router = Router(name='articles')
@@ -60,4 +65,44 @@ async def open_articles_list(
         Always success.
     """
     await show_articles_list(bot, message.chat.id, articles_service)
+    return Ok()
+
+
+@router.callback_query(
+    ArticlesOpenArticleCallback.filter(),
+    F.message.as_('message'),
+)
+async def open_article(
+    callback_query: CallbackQuery,
+    callback_data: ArticlesOpenArticleCallback,
+    message: Message,
+    bot: Bot,
+    articles_service: ArticlesService,
+) -> HandlerResult:
+    """Open article menu.
+
+    Args:
+        callback_query: Open menu query.
+        callback_data: Callback with article query.
+        message: Message where query from.
+        bot: Bot instance.
+        articles_service: Articles service.
+
+    Returns:
+        Ok - Article menu opened successfully.
+        Err - Article not found.
+    """
+    article_opened = await show_article_menu(
+        bot,
+        message.chat.id,
+        article_id=callback_data.article_id,
+        articles_service=articles_service,
+    )
+    if not article_opened:
+        return Err(
+            message='Article {article_id} not found'.format(
+                article_id=callback_data.article_id,
+            ),
+        )
+
     return Ok()

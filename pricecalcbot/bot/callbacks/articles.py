@@ -15,7 +15,19 @@ class ArticlesCreateCallback(CallbackData, prefix='articles/create'):
     """Callback for creating new article."""
 
 
-class ArticlesOpenArticle(CallbackData, prefix='articles/list/article'):
+class ArticlesOpenArticleCallback(
+    CallbackData,
+    prefix='articles/list/article',
+):
     """Open article menu."""
+
+    article_id: str
+
+
+class ArticlesDeleteArticleCallback(
+    CallbackData,
+    prefix='articles/list/article/delete',
+):
+    """Delete article."""
 
     article_id: str

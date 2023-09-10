@@ -6,11 +6,15 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from pricecalcbot.bot.callbacks.articles import (
     ArticlesCreateCallback,
-    ArticlesOpenArticle,
+    ArticlesDeleteArticleCallback,
+    ArticlesOpenArticleCallback,
     ArticlesOpenListCallback,
 )
 from pricecalcbot.bot.texts.articles import (
+    ARTICLE_DESCRIPTION,
+    ARTICLE_NOT_FOUND,
     CREATE_BTN,
+    DELETE_BTN,
     LIST_TITLE,
     OPEN_LIST_BTN,
     TITLE,
@@ -63,7 +67,7 @@ def build_articles_list_kb(
         [
             InlineKeyboardButton(
                 text=article.name,
-                callback_data=ArticlesOpenArticle(
+                callback_data=ArticlesOpenArticleCallback(
                     article_id=article.id,
                 ).pack(),
             ),
@@ -91,3 +95,72 @@ async def show_articles_list(
         text=LIST_TITLE,
         reply_markup=build_articles_list_kb(articles),
     )
+
+
+def build_article_kb(article_id: str) -> InlineKeyboardMarkup:
+    """Create keyboard for article menu.
+
+    Args:
+        article_id: Article id.
+
+    Returns:
+        Keyboard with delete button.
+    """
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [
+            InlineKeyboardButton(
+                text=DELETE_BTN,
+                callback_data=ArticlesDeleteArticleCallback(
+                    article_id=article_id,
+                ).pack(),
+            ),
+        ],
+    ])
+
+
+def build_article_text(article: ArticleInfo) -> str:
+    """Create text with article description.
+
+    Args:
+        article: Article data.
+
+    Returns:
+        Article description.
+    """
+    return ARTICLE_DESCRIPTION.format(
+        name=article.name,
+        duty_fee_ratio=article.duty_fee_ratio,
+    )
+
+
+async def show_article_menu(
+    bot: Bot,
+    chat_id: int,
+    article_id: str,
+    articles_service: ArticlesService,
+) -> bool:
+    """Show article info and delete button.
+
+    Args:
+        bot: Bot instance.
+        chat_id: Chat id.
+        article_id: Article id.
+        articles_service: Articles service.
+
+    Returns:
+        True, if article opened successfully.
+    """
+    article = await articles_service.get_article(article_id)
+    if article is None:
+        await bot.send_message(
+            chat_id,
+            text=ARTICLE_NOT_FOUND,
+        )
+        return False
+
+    await bot.send_message(
+        chat_id,
+        text=build_article_text(article),
+        reply_markup=build_article_kb(article_id),
+    )
+    return True
