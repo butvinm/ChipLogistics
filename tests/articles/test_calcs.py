@@ -11,6 +11,7 @@ from pricecalcbot.models.articles import ArticleItem
 test_data = [
     (
         ArticleItem(
+            name='',
             count=1755,
             unit_weight=Decimal('0.07'),
             unit_price=Decimal('11.12'),
@@ -20,6 +21,7 @@ test_data = [
     ),
     (
         ArticleItem(
+            name='',
             count=10,
             unit_weight=Decimal('2.1'),
             unit_price=Decimal('125.874'),
@@ -29,6 +31,7 @@ test_data = [
     ),
     (
         ArticleItem(
+            name='',
             count=132,
             unit_weight=Decimal('0.23'),
             unit_price=Decimal('13.75'),
@@ -38,6 +41,7 @@ test_data = [
     ),
     (
         ArticleItem(
+            name='',
             count=1500,
             unit_weight=Decimal('0.00048'),
             unit_price=Decimal('0.45'),
@@ -47,6 +51,7 @@ test_data = [
     ),
     (
         ArticleItem(
+            name='',
             count=5000,
             unit_weight=Decimal('0.0002'),
             unit_price=Decimal('50'),
@@ -56,6 +61,7 @@ test_data = [
     ),
     (
         ArticleItem(
+            name='',
             count=5000,
             unit_weight=Decimal('0.0002'),
             unit_price=Decimal('0.5'),
@@ -65,6 +71,7 @@ test_data = [
     ),
     (
         ArticleItem(
+            name='',
             count=5000,
             unit_weight=Decimal('0.001'),
             unit_price=Decimal('3.75'),
@@ -74,6 +81,7 @@ test_data = [
     ),
     (
         ArticleItem(
+            name='',
             count=5000,
             unit_weight=Decimal('0.002'),
             unit_price=Decimal('7.85'),
@@ -98,5 +106,4 @@ def test_article_price_calculation(
         article: The article for which to calculate the price.
         expected_price: Expected function result.
     """
-    result = calculate_article_price(article)
-    assert result == expected_price
+    assert calculate_article_price(article) == expected_price

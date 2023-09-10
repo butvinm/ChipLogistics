@@ -9,6 +9,9 @@ from pydantic import BaseModel, Field
 class ArticleItem(BaseModel):
     """Data of one article item for price calculation."""
 
+    # Name
+    name: str
+
     # Count of article items
     count: int = Field(gt=0)
 
