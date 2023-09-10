@@ -15,6 +15,13 @@ class CreateArticleCallback(CallbackData, prefix='articles/create'):
     """Start creating of the new article."""
 
 
+class ConfirmArticleCreateCallback(
+    CallbackData,
+    prefix='articles/create/confirm',
+):
+    """Confirm article creation."""
+
+
 class OpenArticleCallback(
     CallbackData,
     prefix='articles/list/article',
