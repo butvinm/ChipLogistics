@@ -1,20 +1,21 @@
 """Greeting view."""
 
 
-from aiogram.types.message import Message
+from aiogram import Bot
 
 from pricecalcbot.bot import messages
 from pricecalcbot.bot.handler_result import HandlerResult, Ok
 
 
-async def greet(message: Message) -> HandlerResult:
+async def greet(bot: Bot, chat_id: int) -> HandlerResult:
     """Greet user.
 
     Args:
-        message: Any user message.
+        bot: Bot instance.
+        chat_id: Chat id.
 
     Returns:
         Always success.
     """
-    await message.answer(messages.greet)
+    await bot.send_message(chat_id, messages.greet)
     return Ok()
