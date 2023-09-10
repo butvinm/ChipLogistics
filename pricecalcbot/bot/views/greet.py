@@ -16,7 +16,7 @@ greet_kb = InlineKeyboardMarkup(inline_keyboard=[
 ])
 
 
-async def greet(message: Message) -> None:
+async def send_greet(message: Message) -> None:
     """Greet user.
 
     Args:

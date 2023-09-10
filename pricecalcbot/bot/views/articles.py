@@ -8,9 +8,14 @@ from pricecalcbot.bot.callbacks.articles import (
     ArticlesDeleteArticleCallback,
     ArticlesOpenArticleCallback,
     ArticlesOpenListCallback,
+    ArticlesOpenMenuCallback,
 )
+from pricecalcbot.bot.callbacks.menu import MenuOpenCallback
 from pricecalcbot.bot.texts.articles import (
     ARTICLE_DESCRIPTION,
+    BACK_TO_ARTICLES_MENU,
+    BACK_TO_LIST,
+    BACK_TO_MENU,
     CREATE_BTN,
     DELETE_BTN,
     DELETED_MESSAGE,
@@ -20,31 +25,59 @@ from pricecalcbot.bot.texts.articles import (
 )
 from pricecalcbot.models.articles import ArticleInfo
 
-menu_kb = InlineKeyboardMarkup(inline_keyboard=[
+back_to_menu_btns = [
     [
         InlineKeyboardButton(
-            text=OPEN_LIST_BTN,
+            text=BACK_TO_MENU,
+            callback_data=MenuOpenCallback().pack(),
+        ),
+    ],
+]
+back_to_articles_menu_kb = [
+    [
+        InlineKeyboardButton(
+            text=BACK_TO_ARTICLES_MENU,
+            callback_data=ArticlesOpenMenuCallback().pack(),
+        ),
+    ],
+]
+back_to_list_btns = [
+    [
+        InlineKeyboardButton(
+            text=BACK_TO_LIST,
             callback_data=ArticlesOpenListCallback().pack(),
         ),
     ],
-    [
-        InlineKeyboardButton(
-            text=CREATE_BTN,
-            callback_data=ArticlesCreateCallback().pack(),
-        ),
-    ],
-])
+]
 
 
-async def show_menu(message: Message) -> None:
+articles_menu_kb = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(
+                text=OPEN_LIST_BTN,
+                callback_data=ArticlesOpenListCallback().pack(),
+            ),
+        ],
+        [
+            InlineKeyboardButton(
+                text=CREATE_BTN,
+                callback_data=ArticlesCreateCallback().pack(),
+            ),
+        ],
+    ] + back_to_menu_btns,
+)
+
+
+async def show_articles_menu(message: Message) -> None:
     """Show articles management menu.
 
     Args:
         message: Message. Can be used to answer, modify or get user info.
     """
-    await message.answer(
+    await message.edit_text(
         text=TITLE,
-        reply_markup=menu_kb,
+        reply_markup=articles_menu_kb,
     )
 
 
@@ -59,18 +92,20 @@ def build_articles_list_kb(
     Returns:
         Inline keyboard with buttons for navigation to article menu.
     """
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [
-            InlineKeyboardButton(
-                text=article.name,
-                callback_data=ArticlesOpenArticleCallback(
-                    article_id=article.id,
-                ).pack(),
-            ),
-        ]
-        for article in articles
-        if article.id is not None
-    ])
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=article.name,
+                    callback_data=ArticlesOpenArticleCallback(
+                        article_id=article.id,
+                    ).pack(),
+                ),
+            ]
+            for article in articles
+            if article.id is not None
+        ] + back_to_articles_menu_kb,
+    )
 
 
 async def show_articles_list(
@@ -83,7 +118,7 @@ async def show_articles_list(
         message: Message. Can be used to answer, modify or get user info.
         articles: Articles list.
     """
-    await message.answer(
+    await message.edit_text(
         text=LIST_TITLE,
         reply_markup=build_articles_list_kb(articles),
     )
@@ -98,16 +133,18 @@ def build_article_kb(article_id: str) -> InlineKeyboardMarkup:
     Returns:
         Keyboard with delete button.
     """
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [
-            InlineKeyboardButton(
-                text=DELETE_BTN,
-                callback_data=ArticlesDeleteArticleCallback(
-                    article_id=article_id,
-                ).pack(),
-            ),
-        ],
-    ])
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=DELETE_BTN,
+                    callback_data=ArticlesDeleteArticleCallback(
+                        article_id=article_id,
+                    ).pack(),
+                ),
+            ],
+        ] + back_to_list_btns,
+    )
 
 
 def build_article_text(article: ArticleInfo) -> str:
@@ -137,10 +174,13 @@ async def show_article_menu(
         article_id: Article id.
         article: Article info.
     """
-    await message.answer(
+    await message.edit_text(
         text=build_article_text(article),
         reply_markup=build_article_kb(article_id),
     )
+
+
+deleted_article_kb = InlineKeyboardMarkup(inline_keyboard=back_to_list_btns)
 
 
 async def show_deleted_article(message: Message) -> None:
@@ -149,4 +189,7 @@ async def show_deleted_article(message: Message) -> None:
     Args:
         message: Message. Can be used to answer, modify or get user info.
     """
-    await message.answer(text=DELETED_MESSAGE)
+    await message.edit_text(
+        text=DELETED_MESSAGE,
+        reply_markup=deleted_article_kb,
+    )

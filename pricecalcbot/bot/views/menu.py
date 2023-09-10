@@ -32,7 +32,7 @@ async def show_menu(message: Message) -> None:
     Args:
         message: Message. Can be used to answer, modify or get user info.
     """
-    await message.answer(
+    await message.edit_text(
         text=TITLE,
         reply_markup=menu_kb,
     )

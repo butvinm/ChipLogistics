@@ -14,8 +14,8 @@ from pricecalcbot.bot.handler_result import Err, HandlerResult, Ok
 from pricecalcbot.bot.views.articles import (
     show_article_menu,
     show_articles_list,
+    show_articles_menu,
     show_deleted_article,
-    show_menu,
 )
 from pricecalcbot.core.articles.service import ArticlesService
 
@@ -39,7 +39,7 @@ async def open_menu(
     Returns:
         Always success.
     """
-    await show_menu(message)
+    await show_articles_menu(message)
     return Ok()
 
 

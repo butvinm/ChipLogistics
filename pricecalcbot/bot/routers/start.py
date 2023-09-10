@@ -6,7 +6,7 @@ from aiogram.filters import CommandStart
 from aiogram.types.message import Message
 
 from pricecalcbot.bot.handler_result import HandlerResult, Ok
-from pricecalcbot.bot.views.greet import greet
+from pricecalcbot.bot.views.greet import send_greet
 
 router = Router(name='start')
 
@@ -21,5 +21,5 @@ async def start(message: Message) -> HandlerResult:
     Returns:
         Always success.
     """
-    await greet(message)
+    await send_greet(message)
     return Ok()
