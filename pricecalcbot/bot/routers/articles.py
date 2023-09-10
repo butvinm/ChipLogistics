@@ -60,7 +60,8 @@ async def open_articles_list(
     Returns:
         Always success.
     """
-    await show_articles_list(message, articles_service)
+    articles = await articles_service.find_articles()
+    await show_articles_list(message, articles)
     return Ok()
 
 
@@ -86,16 +87,17 @@ async def open_article(
         Ok - Article menu opened successfully.
         Err - Article not found.
     """
-    article_opened = await show_article_menu(
-        message,
-        article_id=callback_data.article_id,
-        articles_service=articles_service,
-    )
-    if not article_opened:
+    article = await articles_service.get_article(callback_data.article_id)
+    if article is None:
         return Err(
             message='Article {article_id} not found'.format(
                 article_id=callback_data.article_id,
             ),
         )
 
+    await show_article_menu(
+        message,
+        article_id=callback_data.article_id,
+        article=article,
+    )
     return Ok()

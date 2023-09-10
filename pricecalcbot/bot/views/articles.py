@@ -11,14 +11,12 @@ from pricecalcbot.bot.callbacks.articles import (
 )
 from pricecalcbot.bot.texts.articles import (
     ARTICLE_DESCRIPTION,
-    ARTICLE_NOT_FOUND,
     CREATE_BTN,
     DELETE_BTN,
     LIST_TITLE,
     OPEN_LIST_BTN,
     TITLE,
 )
-from pricecalcbot.core.articles.service import ArticlesService
 from pricecalcbot.models.articles import ArticleInfo
 
 menu_kb = InlineKeyboardMarkup(inline_keyboard=[
@@ -76,15 +74,14 @@ def build_articles_list_kb(
 
 async def show_articles_list(
     message: Message,
-    articles_service: ArticlesService,
+    articles: list[ArticleInfo],
 ) -> None:
     """Show articles list.
 
     Args:
         message: Message. Can be used to answer, modify or get user info.
-        articles_service: Articles service.
+        articles: Articles list.
     """
-    articles = await articles_service.find_articles()
     await message.answer(
         text=LIST_TITLE,
         reply_markup=build_articles_list_kb(articles),
@@ -130,27 +127,16 @@ def build_article_text(article: ArticleInfo) -> str:
 async def show_article_menu(
     message: Message,
     article_id: str,
-    articles_service: ArticlesService,
-) -> bool:
+    article: ArticleInfo,
+) -> None:
     """Show article info and delete button.
 
     Args:
         message: Message. Can be used to answer, modify or get user info.
         article_id: Article id.
-        articles_service: Articles service.
-
-    Returns:
-        True, if article opened successfully.
+        article: Article info.
     """
-    article = await articles_service.get_article(article_id)
-    if article is None:
-        await message.answer(
-            text=ARTICLE_NOT_FOUND,
-        )
-        return False
-
     await message.answer(
         text=build_article_text(article),
         reply_markup=build_article_kb(article_id),
     )
-    return True
