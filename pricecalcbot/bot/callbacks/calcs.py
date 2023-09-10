@@ -9,3 +9,13 @@ class StartCalcsCallback(CallbackData, prefix='calcs/open'):
 
 class AddItemCallback(CallbackData, prefix='calcs/add'):
     """Start item calculations."""
+
+
+class SelectArticleCallback(CallbackData, prefix='calcs/article/select'):
+    """Select article from list."""
+
+    article_id: str
+
+
+class ManualArticleCallback(CallbackData, prefix='calcs/article/manual'):
+    """Start manual input of article data."""

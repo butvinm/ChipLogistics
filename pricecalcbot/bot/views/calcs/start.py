@@ -1,4 +1,5 @@
-"""Articles prices calculation views."""
+"""Start view."""
+
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
