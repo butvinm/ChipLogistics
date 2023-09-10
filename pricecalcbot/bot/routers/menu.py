@@ -1,10 +1,11 @@
 """Main menu routes."""
 
 
-from aiogram import F, Router
+from aiogram import Router
 from aiogram.types import CallbackQuery, Message
 
 from pricecalcbot.bot.callbacks.menu import OpenMenuCallback
+from pricecalcbot.bot.filters.extract_message import ExtractMessage
 from pricecalcbot.bot.handler_result import HandlerResult, Ok
 from pricecalcbot.bot.views.menu import show_menu
 
@@ -13,7 +14,7 @@ router = Router(name='menu')
 
 @router.callback_query(
     OpenMenuCallback.filter(),
-    F.message.as_('message'),
+    ExtractMessage,
 )
 async def open_menu(
     callback_query: CallbackQuery,

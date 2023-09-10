@@ -1,10 +1,11 @@
 """Articles list routes."""
 
 
-from aiogram import F, Router
+from aiogram import Router
 from aiogram.types import CallbackQuery, Message
 
 from pricecalcbot.bot.callbacks.articles import OpenArticlesListCallback
+from pricecalcbot.bot.filters.extract_message import ExtractMessage
 from pricecalcbot.bot.handler_result import HandlerResult, Ok
 from pricecalcbot.bot.views.articles.articles_list import show_articles_list
 from pricecalcbot.core.articles.service import ArticlesService
@@ -14,7 +15,7 @@ router = Router(name='articles/list')
 
 @router.callback_query(
     OpenArticlesListCallback.filter(),
-    F.message.as_('message'),
+    ExtractMessage,
 )
 async def open_articles_list(
     callback_query: CallbackQuery,

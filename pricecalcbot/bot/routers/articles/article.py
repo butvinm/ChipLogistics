@@ -1,13 +1,14 @@
 """Article panel routes."""
 
 
-from aiogram import F, Router
+from aiogram import Router
 from aiogram.types import CallbackQuery, Message
 
 from pricecalcbot.bot.callbacks.articles import (
     DeleteArticleCallback,
     OpenArticleCallback,
 )
+from pricecalcbot.bot.filters.extract_message import ExtractMessage
 from pricecalcbot.bot.handler_result import Err, HandlerResult, Ok
 from pricecalcbot.bot.views.articles.article import (
     show_article_menu,
@@ -20,7 +21,7 @@ router = Router(name='articles/article')
 
 @router.callback_query(
     OpenArticleCallback.filter(),
-    F.message.as_('message'),
+    ExtractMessage,
 )
 async def open_article(
     callback_query: CallbackQuery,
@@ -58,7 +59,7 @@ async def open_article(
 
 @router.callback_query(
     DeleteArticleCallback.filter(),
-    F.message.as_('message'),
+    ExtractMessage,
 )
 async def delete_article(
     callback_query: CallbackQuery,
