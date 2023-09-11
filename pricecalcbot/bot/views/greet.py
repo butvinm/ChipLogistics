@@ -1,19 +1,21 @@
 """Greeting view."""
 
 
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+from aiogram.types import KeyboardButton, Message, ReplyKeyboardMarkup
 
-from pricecalcbot.bot.callbacks.menu import OpenMenuCallback
 from pricecalcbot.bot.texts.greet import GREET, OPEN_MENU_BTN
 
-greet_kb = InlineKeyboardMarkup(inline_keyboard=[
-    [
-        InlineKeyboardButton(
-            text=OPEN_MENU_BTN,
-            callback_data=OpenMenuCallback().pack(),
-        ),
+greet_kb = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(
+                text=OPEN_MENU_BTN,
+            ),
+        ],
     ],
-])
+    resize_keyboard=True,
+    is_persistent=True,
+)
 
 
 async def send_greet(message: Message) -> None:
