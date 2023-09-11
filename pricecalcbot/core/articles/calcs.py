@@ -5,6 +5,8 @@ from decimal import Decimal
 
 from pricecalcbot.models.articles import ArticleItem
 
+CalculationsResults = list[tuple[ArticleItem, Decimal]]
+
 # Price of one kg of article weight for air delivery
 AIR_DELIVERY_PRICE_PER_KG = 12
 CUSTOM_FEE_RATIO = Decimal(215) / Decimal(1000)  # noqa: WPS432
@@ -122,3 +124,17 @@ def calculate_article_price(article_item: ArticleItem) -> Decimal:
         duty_fee,
     )
     return price_with_fee * (1 + PRICE_MARGIN_RATIO)
+
+
+def calculate_total_price(
+    calculations_results: list[tuple[ArticleItem, Decimal]],
+) -> Decimal:
+    """Calculate items prices sum.
+
+    Args:
+        calculations_results: List with item sand their costs.
+
+    Returns:
+        Total price.
+    """
+    return sum((price for _, price in calculations_results), Decimal(0))
