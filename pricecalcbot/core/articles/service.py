@@ -7,7 +7,7 @@ Contains logic for managing articles list, calculate articles items price.
 from decimal import Decimal
 from typing import Optional
 
-from pricecalcbot.core.articles import calcs
+from pricecalcbot.core.articles import calcs, report
 from pricecalcbot.core.articles.repo import ArticlesRepository
 from pricecalcbot.models.articles import ArticleInfo, ArticleItem
 
@@ -113,3 +113,46 @@ class ArticlesService(object):
             Calculated price.
         """
         return calcs.calculate_article_price(article_item)
+
+    def calculate_articles_price(
+        self,
+        articles_items: list[ArticleItem],
+    ) -> tuple[calcs.CalculationsResults, Decimal]:
+        """Calculate prices for all items.
+
+        Args:
+            articles_items: Items for price calculating.
+
+        Returns:
+            Items prices and total price.
+        """
+        calculations_results = [
+            (
+                article_item,
+                self.calculate_article_item_price(article_item),
+            )
+            for article_item in articles_items
+        ]
+        total_price = calcs.calculate_total_price(
+            calculations_results,
+        )
+        return calculations_results, total_price
+
+    def create_calculations_report(
+        self,
+        calculations_results: calcs.CalculationsResults,
+        total_price: Decimal,
+    ) -> tuple[bytes, str]:
+        """Generate CSV report for calculations.
+
+        Args:
+            calculations_results: List with item sand their costs.
+            total_price: Total items price.
+
+        Returns:
+            File data and name.
+        """
+        return report.create_calculations_report(
+            calculations_results,
+            total_price,
+        )
