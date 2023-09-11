@@ -40,5 +40,5 @@ def init_dispatcher(deta: Deta) -> Dispatcher:
         calcs_router,
         menu_router,
     )
-    dispatcher.callback_query.middleware(CallbackAnswerMiddleware())
+    dispatcher.callback_query.middleware(CallbackAnswerMiddleware(pre=True))
     return dispatcher
