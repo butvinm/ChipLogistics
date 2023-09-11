@@ -41,3 +41,15 @@ ITEM_DATA = """<b>Наименование:</b> {name}
 Цена за единицу: {unit_price}"""
 
 STOP_BTN = 'Завершить'
+
+CONTACT_SEARCH_MENU = 'Укажите контакт из AmoCRM, к которому будет прикреплен файл с расчетами.'
+
+SEARCH_CONTACT_BTN = 'Найти контакт'
+
+SKIP_CONTACT_BTN = 'Пропустить'
+
+ASK_SEARCH_QUERY = 'Введите запрос для поиска контакта. Это может быть часть имени, телефона или других данных из AmoCRM:'
+
+SEARCH_RESULT = 'Найденные контакты'
+
+CONTINUE_SEARCH_CONTACT_BTN = 'Искать еще'

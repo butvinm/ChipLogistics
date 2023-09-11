@@ -21,5 +21,19 @@ class ManualArticleCallback(CallbackData, prefix='calcs/article/manual'):
     """Start manual input of article data."""
 
 
-class OpenContactSelect(CallbackData, prefix='calcs/contact/open'):
+class OpenContactSelectCallback(CallbackData, prefix='calcs/contact/open'):
     """Open contact select menu."""
+
+
+class SearchContactCallback(CallbackData, prefix='calcs/contact/search'):
+    """Ask query for contact search."""
+
+
+class SkipContactCallback(CallbackData, prefix='calcs/contact/skip'):
+    """Skip contact selecting."""
+
+
+class SelectContactCallback(CallbackData, prefix='calcs/contact/select'):
+    """Select contact."""
+
+    contact_id: int

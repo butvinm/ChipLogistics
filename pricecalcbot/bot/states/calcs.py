@@ -14,5 +14,6 @@ class CalculationsState(StatesGroup):
     wait_item_unit_weight = State()
     wait_item_unit_price = State()
     wait_continuation = State()
-    wait_contact_choice = State()
+    wait_contact_select = State()
+    wait_contact_search = State()
     wait_confirmation = State()

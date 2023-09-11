@@ -3,7 +3,10 @@
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
-from pricecalcbot.bot.callbacks.calcs import AddItemCallback, OpenContactSelect
+from pricecalcbot.bot.callbacks.calcs import (
+    AddItemCallback,
+    OpenContactSelectCallback,
+)
 from pricecalcbot.bot.texts.calcs import (
     ADD_ITEM_BTN,
     CONTINUATION_MENU,
@@ -42,7 +45,7 @@ continuation_menu_kb = InlineKeyboardMarkup(
         [
             InlineKeyboardButton(
                 text=STOP_BTN,
-                callback_data=OpenContactSelect().pack(),
+                callback_data=OpenContactSelectCallback().pack(),
             ),
         ],
     ],
