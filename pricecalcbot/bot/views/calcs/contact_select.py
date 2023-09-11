@@ -4,9 +4,9 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from pricecalcbot.bot.callbacks.calcs import (
+    FinishCalcsCallback,
     SearchContactCallback,
     SelectContactCallback,
-    SkipContactCallback,
 )
 from pricecalcbot.bot.texts.calcs import (
     ASK_SEARCH_QUERY,
@@ -29,7 +29,7 @@ select_menu_kb = InlineKeyboardMarkup(
         [
             InlineKeyboardButton(
                 text=SKIP_CONTACT_BTN,
-                callback_data=SkipContactCallback().pack(),
+                callback_data=FinishCalcsCallback().pack(),
             ),
         ],
     ],
@@ -89,7 +89,7 @@ def build_search_result_kb(contacts: list[Contact]) -> InlineKeyboardMarkup:
     )
     builder.button(
         text=SKIP_CONTACT_BTN,
-        callback_data=SkipContactCallback().pack(),
+        callback_data=FinishCalcsCallback().pack(),
     )
 
     builder.adjust(*rows_sizes)

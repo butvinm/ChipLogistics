@@ -29,11 +29,11 @@ class SearchContactCallback(CallbackData, prefix='calcs/contact/search'):
     """Ask query for contact search."""
 
 
-class SkipContactCallback(CallbackData, prefix='calcs/contact/skip'):
-    """Skip contact selecting."""
-
-
 class SelectContactCallback(CallbackData, prefix='calcs/contact/select'):
     """Select contact."""
 
     contact_id: int
+
+
+class FinishCalcsCallback(CallbackData, prefix='calcs/finish'):
+    """Finish calculations."""
