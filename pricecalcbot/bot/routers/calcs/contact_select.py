@@ -16,6 +16,7 @@ from pricecalcbot.bot.handler_result import HandlerResult, Ok
 from pricecalcbot.bot.states.calcs import CalculationsState
 from pricecalcbot.bot.views.calcs.contact_select import (
     send_contact_select_menu,
+    send_contact_selected,
     send_search_query_request,
     send_search_result,
 )
@@ -125,4 +126,5 @@ async def select_contact(
         Always success.
     """
     await state.update_data(contact_id=callback_data.contact_id)
+    await send_contact_selected(message)
     return Ok()

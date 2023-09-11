@@ -52,6 +52,10 @@ ASK_SEARCH_QUERY = 'Введите запрос для поиска контак
 
 SEARCH_RESULT = 'Найденные контакты'
 
+CONTACT_SELECTED = 'Контакт выбран'
+
 CONTINUE_SEARCH_CONTACT_BTN = 'Искать еще'
 
 CALCS_RESULT = 'Результаты расчетов'
+
+FINISH_BTN = 'Завершить'

@@ -11,7 +11,9 @@ from pricecalcbot.bot.callbacks.calcs import (
 from pricecalcbot.bot.texts.calcs import (
     ASK_SEARCH_QUERY,
     CONTACT_SEARCH_MENU,
+    CONTACT_SELECTED,
     CONTINUE_SEARCH_CONTACT_BTN,
+    FINISH_BTN,
     SEARCH_CONTACT_BTN,
     SEARCH_RESULT,
     SKIP_CONTACT_BTN,
@@ -109,4 +111,30 @@ async def send_search_result(
     await message.answer(
         text=SEARCH_RESULT,
         reply_markup=build_search_result_kb(contacts),
+    )
+
+
+contact_selected_kb = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(
+                text=FINISH_BTN,
+                callback_data=FinishCalcsCallback().pack(),
+            ),
+        ],
+    ],
+)
+
+
+async def send_contact_selected(
+    message: Message,
+) -> None:
+    """Send selecting confirmation and button to finish calculations.
+
+    Args:
+        message: Message. Can be used to answer, modify or get user info.
+    """
+    await message.answer(
+        text=CONTACT_SELECTED,
+        reply_markup=contact_selected_kb,
     )
