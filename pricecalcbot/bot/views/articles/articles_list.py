@@ -47,17 +47,17 @@ def build_articles_list_kb(
     )
 
 
-async def show_articles_list(
+async def send_articles_list(
     message: Message,
     articles: list[ArticleInfo],
 ) -> None:
-    """Show articles list.
+    """Send articles list.
 
     Args:
         message: Message. Can be used to answer, modify or get user info.
         articles: Articles list.
     """
-    await message.edit_text(
+    await message.answer(
         text=LIST_TITLE,
         reply_markup=build_articles_list_kb(articles),
     )

@@ -41,7 +41,7 @@ select_menu_kb = InlineKeyboardMarkup(
 async def send_contact_select_menu(
     message: Message,
 ) -> None:
-    """Show select menu with search button.
+    """Send select menu with search button.
 
     Args:
         message: Message. Can be used to answer, modify or get user info.
@@ -55,7 +55,7 @@ async def send_contact_select_menu(
 async def send_search_query_request(
     message: Message,
 ) -> None:
-    """Show select menu with search button.
+    """Send select menu with search button.
 
     Args:
         message: Message. Can be used to answer, modify or get user info.
@@ -102,7 +102,7 @@ async def send_search_result(
     message: Message,
     contacts: list[Contact],
 ) -> None:
-    """Show search result with contacts list.
+    """Send search result with contacts list.
 
     Args:
         message: Message. Can be used to answer, modify or get user info.

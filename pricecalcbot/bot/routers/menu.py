@@ -7,7 +7,7 @@ from aiogram.types import CallbackQuery, Message
 from pricecalcbot.bot.callbacks.menu import OpenMenuCallback
 from pricecalcbot.bot.filters.extract_message import ExtractMessage
 from pricecalcbot.bot.handler_result import HandlerResult, Ok
-from pricecalcbot.bot.views.menu import show_menu
+from pricecalcbot.bot.views.menu import send_menu
 
 router = Router(name='menu')
 
@@ -29,5 +29,5 @@ async def open_menu(
     Returns:
         Always Success.
     """
-    await show_menu(message)
+    await send_menu(message)
     return Ok()

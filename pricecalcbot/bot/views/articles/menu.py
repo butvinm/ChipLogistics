@@ -42,13 +42,13 @@ articles_menu_kb = InlineKeyboardMarkup(
 )
 
 
-async def show_articles_menu(message: Message) -> None:
-    """Show articles management menu.
+async def send_articles_menu(message: Message) -> None:
+    """Send articles management menu.
 
     Args:
         message: Message. Can be used to answer, modify or get user info.
     """
-    await message.edit_text(
+    await message.answer(
         text=TITLE,
         reply_markup=articles_menu_kb,
     )

@@ -7,7 +7,7 @@ from aiogram.types import CallbackQuery, Message
 from pricecalcbot.bot.callbacks.articles import OpenArticlesListCallback
 from pricecalcbot.bot.filters.extract_message import ExtractMessage
 from pricecalcbot.bot.handler_result import HandlerResult, Ok
-from pricecalcbot.bot.views.articles.articles_list import show_articles_list
+from pricecalcbot.bot.views.articles.articles_list import send_articles_list
 from pricecalcbot.core.articles.service import ArticlesService
 
 router = Router(name='articles/list')
@@ -33,5 +33,5 @@ async def open_articles_list(
         Always success.
     """
     articles = await articles_service.find_articles()
-    await show_articles_list(message, articles)
+    await send_articles_list(message, articles)
     return Ok()

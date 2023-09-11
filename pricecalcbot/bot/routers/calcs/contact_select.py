@@ -35,7 +35,7 @@ async def open_contact_select(
     message: Message,
     state: FSMContext,
 ) -> HandlerResult:
-    """Show contact select menu.
+    """Send contact select menu.
 
     Args:
         callback_query: Open menu query.

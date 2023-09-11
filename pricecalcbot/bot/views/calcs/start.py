@@ -27,13 +27,13 @@ start_kb = InlineKeyboardMarkup(
 )
 
 
-async def show_start_menu(message: Message) -> None:
-    """Show start menu with button for item adding.
+async def send_start_menu(message: Message) -> None:
+    """Send start menu with button for item adding.
 
     Args:
         message: Message. Can be used to answer, modify or get user info.
     """
-    await message.edit_text(
+    await message.answer(
         text=START,
         reply_markup=start_kb,
     )

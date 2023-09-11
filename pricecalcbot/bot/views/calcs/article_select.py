@@ -60,7 +60,7 @@ async def send_article_request(
     message: Message,
     articles: list[ArticleInfo],
 ) -> None:
-    """Show articles list and manual input buttons.
+    """Send articles list and manual input buttons.
 
     Args:
         message: Message. Can be used to answer, modify or get user info.

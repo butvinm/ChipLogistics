@@ -11,8 +11,8 @@ from pricecalcbot.bot.callbacks.articles import (
 from pricecalcbot.bot.filters.extract_message import ExtractMessage
 from pricecalcbot.bot.handler_result import Err, HandlerResult, Ok
 from pricecalcbot.bot.views.articles.article import (
-    show_article_menu,
-    show_deleted_article,
+    send_article_menu,
+    send_deleted_article,
 )
 from pricecalcbot.core.articles.service import ArticlesService
 
@@ -49,7 +49,7 @@ async def open_article(
             ),
         )
 
-    await show_article_menu(
+    await send_article_menu(
         message,
         article_id=callback_data.article_id,
         article=article,
@@ -89,5 +89,5 @@ async def delete_article(
             ),
         )
 
-    await show_deleted_article(message)
+    await send_deleted_article(message)
     return Ok()

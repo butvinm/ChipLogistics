@@ -63,19 +63,19 @@ def build_article_text(article: ArticleInfo) -> str:
     )
 
 
-async def show_article_menu(
+async def send_article_menu(
     message: Message,
     article_id: str,
     article: ArticleInfo,
 ) -> None:
-    """Show article info and delete button.
+    """Send article info and delete button.
 
     Args:
         message: Message. Can be used to answer, modify or get user info.
         article_id: Article id.
         article: Article info.
     """
-    await message.edit_text(
+    await message.answer(
         text=build_article_text(article),
         reply_markup=build_article_kb(article_id),
     )
@@ -83,13 +83,13 @@ async def show_article_menu(
 deleted_article_kb = InlineKeyboardMarkup(inline_keyboard=back_to_list_btns)
 
 
-async def show_deleted_article(message: Message) -> None:
-    """Show article deleting message.
+async def send_deleted_article(message: Message) -> None:
+    """Send article deleting message.
 
     Args:
         message: Message. Can be used to answer, modify or get user info.
     """
-    await message.edit_text(
+    await message.answer(
         text=DELETED_MESSAGE,
         reply_markup=deleted_article_kb,
     )

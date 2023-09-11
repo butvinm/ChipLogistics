@@ -10,7 +10,7 @@ async def send_calcs_report(
     report_data: bytes,
     report_name: str,
 ) -> None:
-    """Show finish message with calculations results.
+    """Send finish message with calculations results.
 
     Args:
         message: Message. Can be used to answer, modify or get user info.

@@ -29,7 +29,7 @@ async def finish_calcs(
     amocrm_service: AmoCRMService,
     articles_service: ArticlesService,
 ) -> HandlerResult:
-    """Show contact select menu.
+    """Send contact select menu.
 
     Args:
         callback_query: Open menu query.

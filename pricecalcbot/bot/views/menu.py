@@ -23,8 +23,8 @@ menu_kb = InlineKeyboardMarkup(inline_keyboard=[
 ])
 
 
-async def show_menu(message: Message) -> None:
-    """Show main menu with navigation buttons.
+async def send_menu(message: Message) -> None:
+    """Send main menu with navigation buttons.
 
     Main menu contains buttons for navigate to
     articles management menu and price calculation.
@@ -32,7 +32,7 @@ async def show_menu(message: Message) -> None:
     Args:
         message: Message. Can be used to answer, modify or get user info.
     """
-    await message.edit_text(
+    await message.answer(
         text=TITLE,
         reply_markup=menu_kb,
     )

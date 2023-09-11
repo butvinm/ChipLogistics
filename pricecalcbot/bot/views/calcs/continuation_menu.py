@@ -56,7 +56,7 @@ async def send_continuation_menu(
     message: Message,
     articles_items: list[ArticleItem],
 ) -> None:
-    """Show articles list with continue and stop buttons.
+    """Send articles list with continue and stop buttons.
 
     Args:
         message: Message. Can be used to answer, modify or get user info.

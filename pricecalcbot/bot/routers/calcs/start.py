@@ -7,7 +7,7 @@ from aiogram.types import CallbackQuery, Message
 from pricecalcbot.bot.callbacks.calcs import StartCalcsCallback
 from pricecalcbot.bot.filters.extract_message import ExtractMessage
 from pricecalcbot.bot.handler_result import HandlerResult, Ok
-from pricecalcbot.bot.views.calcs.start import show_start_menu
+from pricecalcbot.bot.views.calcs.start import send_start_menu
 
 router = Router(name='calcs/start')
 
@@ -20,7 +20,7 @@ async def start_calcs(
     callback_query: CallbackQuery,
     message: Message,
 ) -> HandlerResult:
-    """Show start message.
+    """Send start message.
 
     Args:
         callback_query: Open menu query.
@@ -29,5 +29,5 @@ async def start_calcs(
     Returns:
         Always success.
     """
-    await show_start_menu(message)
+    await send_start_menu(message)
     return Ok()
