@@ -50,4 +50,4 @@ def create_calculations_report(
         'Общая стоимость',
         total_price,
     ])
-    return file_buffer.getvalue().encode('utf-8'), generate_report_name()
+    return file_buffer.getvalue().encode('utf_8_sig'), generate_report_name()
