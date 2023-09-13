@@ -10,6 +10,7 @@ class CalculationsState(StatesGroup):
     wait_article = State()
     wait_article_name = State()
     wait_article_duty_fee_ratio = State()
+    wait_item_name = State()
     wait_item_count = State()
     wait_item_unit_weight = State()
     wait_item_unit_price = State()

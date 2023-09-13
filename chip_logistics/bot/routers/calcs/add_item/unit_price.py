@@ -10,10 +10,10 @@ from aiogram.types import Message
 from chip_logistics.bot.filters.text_message import TextMessage
 from chip_logistics.bot.handler_result import Err, HandlerResult, Ok
 from chip_logistics.bot.states.calcs import CalculationsState
+from chip_logistics.bot.views.calcs.add_item import send_bad_item_unit_price
 from chip_logistics.bot.views.calcs.continuation_menu import (
     send_continuation_menu,
 )
-from chip_logistics.bot.views.calcs.add_item import send_bad_item_unit_price
 from chip_logistics.deta.models import model_dump
 from chip_logistics.models.articles import ArticleItem
 from chip_logistics.utils.decimal import parse_decimal
@@ -52,7 +52,7 @@ async def handle_item_unit_price(
 
     context = await state.update_data(unit_price=str(unit_price))
 
-    article_item = ArticleItem(name='', **context)
+    article_item = ArticleItem(**context)
     context.setdefault('items', []).append(model_dump(article_item))
     articles_items = [
         ArticleItem(**article_item_data)
