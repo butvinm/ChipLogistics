@@ -5,8 +5,10 @@ from decimal import DecimalException
 
 from aiogram import Router
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message
+from aiogram.types import CallbackQuery, Message
 
+from chip_logistics.bot.callbacks.calcs import AddItemCallback
+from chip_logistics.bot.filters.extract_message import ExtractMessage
 from chip_logistics.bot.filters.text_message import TextMessage
 from chip_logistics.bot.handler_result import Err, HandlerResult, Ok
 from chip_logistics.bot.states.calcs import CalculationsState
@@ -17,6 +19,7 @@ from chip_logistics.bot.views.calcs.item_data import (
     send_bad_item_count,
     send_bad_item_unit_price,
     send_bad_item_unit_weight,
+    send_item_count_request,
     send_item_unit_price_request,
     send_item_unit_weight_request,
 )
@@ -25,6 +28,31 @@ from chip_logistics.models.articles import ArticleItem
 from chip_logistics.utils.decimal import parse_decimal
 
 router = Router(name='calcs/item_data')
+
+
+@router.callback_query(
+    CalculationsState.wait_continuation,
+    AddItemCallback.filter(),
+    ExtractMessage,
+)
+async def start_item_data_dialog(
+    callback_query: CallbackQuery,
+    message: Message,
+    state: FSMContext,
+) -> HandlerResult:
+    """Ask item count.
+
+    Args:
+        callback_query: Callback query.
+        message: Message where query from.
+        state: Current FSM state.
+
+    Returns:
+        Always success.
+    """
+    await send_item_count_request(message)
+    await state.set_state(CalculationsState.wait_item_count)
+    return Ok()
 
 
 @router.message(
@@ -128,7 +156,7 @@ async def handle_item_unit_price(
 
     context = await state.update_data(unit_price=str(unit_price))
 
-    article_item = ArticleItem(**context)
+    article_item = ArticleItem(name='', **context)
     context.setdefault('items', []).append(model_dump(article_item))
     articles_items = [
         ArticleItem(**article_item_data)

@@ -8,6 +8,7 @@ from aiogram.types import CallbackQuery, Message
 from chip_logistics.bot.callbacks.calcs import StartCalcsCallback
 from chip_logistics.bot.filters.extract_message import ExtractMessage
 from chip_logistics.bot.handler_result import HandlerResult, Ok
+from chip_logistics.bot.states.calcs import CalculationsState
 from chip_logistics.bot.views.calcs.start import send_start_menu
 
 router = Router(name='calcs/start')
@@ -34,4 +35,5 @@ async def start_calcs(
     """
     await send_start_menu(message)
     await state.clear()
+    await state.set_state(CalculationsState.wait_continuation)
     return Ok()
