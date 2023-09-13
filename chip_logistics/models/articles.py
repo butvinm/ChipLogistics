@@ -27,13 +27,13 @@ class ArticleItem(BaseModel):
     name: str
 
     # Count of article items
-    count: int = Field(gt=0)
+    count: int = Field(ge=0)
 
     # Weight per unit in kg
-    unit_weight: Decimal = Field(gt=0)
+    unit_weight: Decimal = Field(ge=0)
 
     # Price per unit in rubles
-    unit_price: Decimal = Field(gt=0)
+    unit_price: Decimal = Field(ge=0)
 
     # Duty fee ratio for price
     duty_fee_ratio: Decimal = Field(default=Decimal(1), ge=1)
