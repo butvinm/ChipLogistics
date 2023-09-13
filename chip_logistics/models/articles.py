@@ -36,4 +36,4 @@ class ArticleItem(BaseModel):
     unit_price: Decimal = Field(gt=0)
 
     # Duty fee ratio for price
-    duty_fee_ratio: Decimal = Field(ge=1)
+    duty_fee_ratio: Decimal = Field(default=Decimal(1), ge=1)
