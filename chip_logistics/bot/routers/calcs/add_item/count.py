@@ -51,7 +51,7 @@ async def handle_item_count(
             message='Incorrect item count format.',
         )
 
+    await send_item_unit_weight_request(message)
     await state.update_data(count=count)
     await state.set_state(CalculationsState.wait_item_unit_weight)
-    await send_item_unit_weight_request(message)
     return Ok(extra={'count': count})

@@ -64,8 +64,9 @@ async def handle_item_unit_price(
         ArticleItem(**article_item_data)
         for article_item_data in context.get('items', [])
     ]
-    await state.set_data(context)
 
-    await state.set_state(CalculationsState.wait_continuation)
     await send_continuation_menu(message, articles_items)
+
+    await state.set_data(context)
+    await state.set_state(CalculationsState.wait_continuation)
     return Ok(extra={'item': article_item})

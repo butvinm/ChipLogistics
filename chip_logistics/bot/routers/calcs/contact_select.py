@@ -125,6 +125,6 @@ async def select_contact(
     Returns:
         Always success.
     """
-    await state.update_data(contact_id=callback_data.contact_id)
     await send_contact_selected(message)
+    await state.update_data(contact_id=callback_data.contact_id)
     return Ok()

@@ -48,9 +48,9 @@ async def start_article_creation(
     Returns:
         Always success.
     """
+    await send_name_request(message)
     await state.clear()
     await state.set_state(CreateArticleState.wait_name)
-    await send_name_request(message)
     return Ok()
 
 
@@ -70,9 +70,9 @@ async def handle_name(
     Returns:
         Always success.
     """
+    await send_duty_fee_ratio_request(message)
     await state.update_data(name=text)
     await state.set_state(CreateArticleState.wait_duty_fee_ratio)
-    await send_duty_fee_ratio_request(message)
     return Ok(extra={'name': text})
 
 
