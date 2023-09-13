@@ -50,6 +50,12 @@ async def handle_item_unit_price(
             message='Incorrect item unit price format.',
         )
 
+    if unit_price < 0:
+        await send_bad_item_unit_price(message)
+        return Err(
+            message='Incorrect item unit price format.',
+        )
+
     context = await state.update_data(unit_price=str(unit_price))
 
     article_item = ArticleItem(**context)
