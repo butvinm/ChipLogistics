@@ -1,10 +1,13 @@
 """CSV report generation."""
 
 
-import csv
 from datetime import datetime
 from decimal import Decimal
-from io import StringIO
+from io import BytesIO
+
+from openpyxl import Workbook
+from openpyxl.worksheet.worksheet import Worksheet
+from openpyxl.styles import Font
 
 from chip_logistics.models.articles import ArticleItem
 
@@ -13,18 +16,31 @@ def generate_report_name() -> str:
     """Generate report file name from current datetime.
 
     Returns:
-        Report file name with .csv extension.
+        Report file name with .xlsx extension.
     """
-    return 'Расчет-{date}.csv'.format(
+    return 'Расчет-{date}.xlsx'.format(
         date=datetime.now().strftime('%H:%M-%m.%d.%Y'),
     )
+
+
+def add_header(sheet: Worksheet, columns_names: list[str]) -> None:
+    """Add header with bold columns names to sheet.
+
+    Args:
+        sheet: Target worksheet.
+        columns_names: Names of columns in header.
+    """
+    header_font = Font(bold=True)
+    for column, column_name in enumerate(columns_names):
+        cell = sheet.cell(1, column + 1, value=column_name)
+        cell.font = header_font
 
 
 def create_calculations_report(
     calculations_results: list[tuple[ArticleItem, Decimal]],
     total_price: Decimal,
 ) -> tuple[bytes, str]:
-    """Generate CSV report for calculations.
+    """Generate Excel calculations report.
 
     Args:
         calculations_results: List with item sand their costs.
@@ -33,21 +49,20 @@ def create_calculations_report(
     Returns:
         File data and name.
     """
-    file_buffer = StringIO()
-    writer = csv.writer(file_buffer)
+    workbook = Workbook()
+    sheet = workbook.active
 
-    writer.writerow([
-        'Наименование',
-        'Цена',
-    ])
+    add_header(sheet, ['Наименование', 'Цена'])
+
     for article_item, price in calculations_results:
-        writer.writerow([
+        sheet.append([
             article_item.name,
             price,
         ])
 
-    writer.writerow([
-        'Общая стоимость',
-        total_price,
-    ])
-    return file_buffer.getvalue().encode('utf_8_sig'), generate_report_name()
+    sheet.append([])
+    sheet.append(['Общая стоимость', total_price])
+
+    file_buffer = BytesIO()
+    workbook.save(file_buffer)
+    return file_buffer.getvalue(), generate_report_name()
