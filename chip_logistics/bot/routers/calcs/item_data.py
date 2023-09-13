@@ -1,7 +1,7 @@
 """Item data handling routes."""
 
 
-from decimal import Decimal, DecimalException
+from decimal import DecimalException
 
 from aiogram import Router
 from aiogram.fsm.context import FSMContext
@@ -22,6 +22,7 @@ from chip_logistics.bot.views.calcs.item_data import (
 )
 from chip_logistics.deta.models import model_dump
 from chip_logistics.models.articles import ArticleItem
+from chip_logistics.utils.decimal import parse_decimal
 
 router = Router(name='calcs/item_data')
 
@@ -82,7 +83,7 @@ async def handle_item_unit_weight(
         Err - incorrect weight format.
     """
     try:
-        unit_weight = Decimal(text)
+        unit_weight = parse_decimal(text)
     except DecimalException as convert_error:
         await send_bad_item_unit_weight(message)
         return Err(
@@ -117,7 +118,7 @@ async def handle_item_unit_price(
         Err - incorrect price format.
     """
     try:
-        unit_price = Decimal(text)
+        unit_price = parse_decimal(text)
     except DecimalException as convert_error:
         await send_bad_item_unit_price(message)
         return Err(
