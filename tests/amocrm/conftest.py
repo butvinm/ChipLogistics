@@ -6,7 +6,7 @@ from os import environ
 import pytest
 from dotenv import load_dotenv
 
-from pricecalcbot.models.amocrm import Credentials
+from chip_logistics.models.amocrm import Credentials
 
 load_dotenv('./tests/amocrm/.env')
 

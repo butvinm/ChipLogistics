@@ -8,9 +8,9 @@ from typing import AsyncGenerator, Optional
 
 import pytest
 
-from pricecalcbot.core.articles.repo import ArticlesRepository
-from pricecalcbot.core.articles.service import ArticlesService
-from pricecalcbot.models.articles import ArticleInfo, ArticleItem
+from chip_logistics.core.articles.repo import ArticlesRepository
+from chip_logistics.core.articles.service import ArticlesService
+from chip_logistics.models.articles import ArticleInfo, ArticleItem
 from tests.articles.conftest import test_articles
 
 

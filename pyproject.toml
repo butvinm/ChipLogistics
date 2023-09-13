@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "pricecalcbot"
+name = "chip_logistics"
 version = "0.1.0"
-description = ""
+description = "Telegram-bot for logistic prices calculations for WelcomeToRussia company."
 authors = ["butvinm <butvin.mihail@yandex.ru>"]
 readme = "README.md"
 

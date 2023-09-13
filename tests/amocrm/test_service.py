@@ -5,9 +5,9 @@ from typing import AsyncGenerator
 
 import pytest
 
-from pricecalcbot.core.amocrm.repo import AmoCRMRepository
-from pricecalcbot.core.amocrm.service import AmoCRMService
-from pricecalcbot.models.amocrm import Credentials
+from chip_logistics.core.amocrm.repo import AmoCRMRepository
+from chip_logistics.core.amocrm.service import AmoCRMService
+from chip_logistics.models.amocrm import Credentials
 
 
 class MockAmoCRMRepository(AmoCRMRepository):

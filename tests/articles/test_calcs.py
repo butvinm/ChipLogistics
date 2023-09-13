@@ -5,8 +5,8 @@ from decimal import Decimal
 
 import pytest
 
-from pricecalcbot.core.articles.calcs import calculate_article_price
-from pricecalcbot.models.articles import ArticleItem
+from chip_logistics.core.articles.calcs import calculate_article_price
+from chip_logistics.models.articles import ArticleItem
 from tests.articles.conftest import test_articles
 
 
