@@ -13,6 +13,7 @@ fastapi = "^0.103.1"
 uvicorn = "^0.23.2"
 aiogram = ">=3"
 aiogram_deta = { git = "https://github.com/butvinm/aiogram_deta.git", branch = "flexible-deps"}
+openpyxl = "^3.1.2"
 
 [tool.poetry.group.dev.dependencies]
 wemake-python-styleguide = "^0.18.0"
@@ -20,6 +21,7 @@ mypy = "^1.5.1"
 pytest = "^7.4.1"
 pytest-asyncio = "^0.21.1"
 python-dotenv = "^1.0.0"
+openpyxl-stubs = "^0.1.25"
 
 [build-system]
 requires = ["poetry-core"]
