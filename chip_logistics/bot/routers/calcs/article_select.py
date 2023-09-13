@@ -181,12 +181,13 @@ async def handle_duty_fee_ratio(
             message='Incorrect duty fee ratio format.',
         )
 
+    await send_item_count_request(message)
+
     await state.update_data(duty_fee_ratio=str(duty_fee_ratio))
     await state.set_state(CalculationsState.wait_item_count)
 
     context = await state.get_data()
     article = ArticleInfo(id=None, **context)
-    await send_item_count_request(message)
     return Ok(extra={
         'name': article.name,
         'duty_fee_ratio': article.duty_fee_ratio,

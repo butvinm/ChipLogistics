@@ -54,7 +54,8 @@ async def handle_item_unit_weight(
             message='Incorrect item unit weight format.',
         )
 
+    await send_item_unit_price_request(message)
+
     await state.update_data(unit_weight=str(unit_weight))
     await state.set_state(CalculationsState.wait_item_unit_price)
-    await send_item_unit_price_request(message)
     return Ok(extra={'unit_weight': unit_weight})

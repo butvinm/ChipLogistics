@@ -32,7 +32,7 @@ async def handle_item_name(
     Returns:
         Always success.
     """
+    await send_item_count_request(message)
     await state.update_data(name=text)
     await state.set_state(CalculationsState.wait_item_count)
-    await send_item_count_request(message)
     return Ok(extra={'name': text})
