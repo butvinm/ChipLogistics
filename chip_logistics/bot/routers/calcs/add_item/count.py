@@ -45,6 +45,12 @@ async def handle_item_count(
             message='Incorrect item count format.',
         )
 
+    if count < 0:
+        await send_bad_item_count(message)
+        return Err(
+            message='Incorrect item count format.',
+        )
+
     await state.update_data(count=count)
     await state.set_state(CalculationsState.wait_item_unit_weight)
     await send_item_unit_weight_request(message)
