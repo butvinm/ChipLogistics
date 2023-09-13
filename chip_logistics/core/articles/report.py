@@ -6,8 +6,8 @@ from decimal import Decimal
 from io import BytesIO
 
 from openpyxl import Workbook
-from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.styles import Font
+from openpyxl.worksheet.worksheet import Worksheet
 
 from chip_logistics.models.articles import ArticleItem
 
@@ -52,11 +52,12 @@ def create_calculations_report(
     workbook = Workbook()
     sheet = workbook.active
 
-    add_header(sheet, ['Наименование', 'Цена'])
+    add_header(sheet, ['Наименование', 'Таможенная пошлина', 'Цена'])
 
     for article_item, price in calculations_results:
         sheet.append([
             article_item.name,
+            1 - article_item.duty_fee_ratio,
             price,
         ])
 
