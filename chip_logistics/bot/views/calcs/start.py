@@ -4,23 +4,14 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 from chip_logistics.bot.callbacks.calcs import AddItemCallback
-from chip_logistics.bot.callbacks.menu import OpenMenuCallback
-from chip_logistics.bot.texts.calcs import ADD_ITEM_BTN, BACK_TO_MENU, START
+from chip_logistics.bot.texts.calcs import ADD_ITEM_BTN, START
 
-add_item_btns = [
-    [
-        InlineKeyboardButton(
-            text=ADD_ITEM_BTN,
-            callback_data=AddItemCallback().pack(),
-        ),
-    ],
-]
 start_kb = InlineKeyboardMarkup(
-    inline_keyboard=add_item_btns + [
+    inline_keyboard=[
         [
             InlineKeyboardButton(
-                text=BACK_TO_MENU,
-                callback_data=OpenMenuCallback().pack(),
+                text=ADD_ITEM_BTN,
+                callback_data=AddItemCallback().pack(),
             ),
         ],
     ],

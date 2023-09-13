@@ -4,12 +4,24 @@ from aiogram.types import Message
 
 from chip_logistics.bot.texts.calcs import (
     ASK_ITEM_COUNT,
+    ASK_ITEM_NAME,
     ASK_ITEM_UNIT_PRICE,
     ASK_ITEM_UNIT_WEIGHT,
     BAD_ITEM_COUNT,
     BAD_ITEM_UNIT_PRICE,
     BAD_ITEM_UNIT_WEIGHT,
 )
+
+
+async def send_item_name_request(
+    message: Message,
+) -> None:
+    """Ask article item name.
+
+    Args:
+        message: Message. Can be used to answer, modify or get user info.
+    """
+    await message.answer(text=ASK_ITEM_NAME)
 
 
 async def send_item_count_request(

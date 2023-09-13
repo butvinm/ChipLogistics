@@ -22,7 +22,7 @@ from chip_logistics.bot.views.calcs.article_select import (
     send_duty_fee_ratio_request,
     send_name_request,
 )
-from chip_logistics.bot.views.calcs.item_data import send_item_count_request
+from chip_logistics.bot.views.calcs.add_item import send_item_count_request
 from chip_logistics.core.articles.service import ArticlesService
 from chip_logistics.models.articles import ArticleInfo
 from chip_logistics.utils.decimal import parse_decimal
