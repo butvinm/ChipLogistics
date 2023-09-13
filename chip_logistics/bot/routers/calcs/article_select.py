@@ -25,6 +25,7 @@ from chip_logistics.bot.views.calcs.article_select import (
 from chip_logistics.bot.views.calcs.item_data import send_item_count_request
 from chip_logistics.core.articles.service import ArticlesService
 from chip_logistics.models.articles import ArticleInfo
+from chip_logistics.utils.decimal import parse_decimal
 
 router = Router(name='calcs/article')
 
@@ -172,7 +173,7 @@ async def handle_duty_fee_ratio(
         Err - incorrect duty fee ratio format.
     """
     try:
-        duty_fee_ratio = Decimal(text) / Decimal(100) + 1
+        duty_fee_ratio = parse_decimal(text) / Decimal(100) + 1
     except DecimalException as convert_error:
         await send_bad_duty_fee_ratio(message)
         return Err(
