@@ -4,7 +4,7 @@
 # List of articles and them costs
 from decimal import Decimal
 
-from pricecalcbot.models.articles import ArticleItem
+from chip_logistics.models.articles import ArticleItem
 
 test_articles = (
     (
