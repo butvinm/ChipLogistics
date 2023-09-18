@@ -1,6 +1,8 @@
 """Finish router."""
 
 
+from typing import Any
+
 from aiogram import Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
@@ -43,11 +45,11 @@ async def finish_calcs(
         Err - file upload fails.
     """
     context = await state.get_data()
-    articles_items = [
-        ArticleItem(**article_item)
-        for article_item in context.get('items', [])
-    ]
-    report_data, report_name = get_report(articles_items, articles_service)
+    report_data, report_name = get_report(
+        context.get('items', []),
+        context.get('customer_name', ''),
+        articles_service,
+    )
 
     contact_id = context.get('contact_id')
     if contact_id is not None:
@@ -68,24 +70,31 @@ async def finish_calcs(
 
 
 def get_report(
-    articles_items: list[ArticleItem],
+    articles_data: list[dict[str, Any]],
+    customer_name: str,
     articles_service: ArticlesService,
 ) -> tuple[bytes, str]:
     """Calculate price and form report.
 
     Args:
-        articles_items: Articles items for calculations.
+        articles_data: Entered articles data from FSM context.
+        customer_name: Entered customer_name from FSM context.
         articles_service: Articles service.
 
     Returns:
         Calculations report.
     """
+    articles_items = [
+        ArticleItem(**item_data)
+        for item_data in articles_data
+    ]
     calculations_results, total_price = articles_service.calculate_articles_price(  # noqa: E501
         articles_items,
     )
     return articles_service.create_calculations_report(
         calculations_results,
         total_price,
+        customer_name,
     )
 
 

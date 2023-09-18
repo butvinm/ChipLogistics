@@ -56,12 +56,14 @@ def adjust_columns_width(sheet: Worksheet) -> None:
 def create_calculations_report(
     calculations_results: list[tuple[ArticleItem, Decimal]],
     total_price: Decimal,
+    customer_name: str,
 ) -> tuple[bytes, str]:
     """Generate Excel calculations report.
 
     Args:
         calculations_results: List with item sand their costs.
         total_price: Total items price.
+        customer_name: Customer name.
 
     Returns:
         File data and name.
@@ -72,6 +74,7 @@ def create_calculations_report(
     add_header(
         sheet,
         [
+            'Клиент',
             'Наименование',
             'Количество',
             'Общий вес',
@@ -82,6 +85,7 @@ def create_calculations_report(
 
     for article_item, price in calculations_results:
         sheet.append([
+            customer_name,
             article_item.name,
             article_item.count,
             article_item.unit_weight * article_item.count,
