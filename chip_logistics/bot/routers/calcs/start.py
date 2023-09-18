@@ -9,7 +9,7 @@ from chip_logistics.bot.callbacks.calcs import StartCalcsCallback
 from chip_logistics.bot.filters.extract_message import ExtractMessage
 from chip_logistics.bot.handler_result import HandlerResult, Ok
 from chip_logistics.bot.states.calcs import CalculationsState
-from chip_logistics.bot.views.calcs.start import send_start_menu
+from chip_logistics.bot.views.calcs.customer import send_customer_name_request
 
 router = Router(name='calcs/start')
 
@@ -33,7 +33,7 @@ async def start_calcs(
     Returns:
         Always success.
     """
-    await send_start_menu(message)
+    await send_customer_name_request(message)
     await state.clear()
-    await state.set_state(CalculationsState.wait_continuation)
+    await state.set_state(CalculationsState.wait_customer_name)
     return Ok()

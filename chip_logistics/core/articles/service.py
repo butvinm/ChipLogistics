@@ -142,12 +142,14 @@ class ArticlesService(object):
         self,
         calculations_results: calcs.CalculationsResults,
         total_price: Decimal,
+        customer_name: str,
     ) -> tuple[bytes, str]:
         """Generate CSV report for calculations.
 
         Args:
             calculations_results: List with item sand their costs.
             total_price: Total items price.
+            customer_name: Customer name.
 
         Returns:
             File data and name.
@@ -155,4 +157,5 @@ class ArticlesService(object):
         return report.create_calculations_report(
             calculations_results,
             total_price,
+            customer_name,
         )
