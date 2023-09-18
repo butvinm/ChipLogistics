@@ -7,6 +7,7 @@ from aiogram.fsm.state import State, StatesGroup
 class CalculationsState(StatesGroup):
     """States of whole calculations process."""
 
+    wait_customer_name = State()
     wait_article = State()
     wait_article_name = State()
     wait_article_duty_fee_ratio = State()
