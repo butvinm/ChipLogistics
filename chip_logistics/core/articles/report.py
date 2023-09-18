@@ -69,11 +69,22 @@ def create_calculations_report(
     workbook = Workbook()
     sheet = workbook.active
 
-    add_header(sheet, ['Наименование', 'Таможенная пошлина', 'Цена'])
+    add_header(
+        sheet,
+        [
+            'Наименование',
+            'Количество',
+            'Общий вес',
+            'Таможенная пошлина',
+            'Цена',
+        ],
+    )
 
     for article_item, price in calculations_results:
         sheet.append([
             article_item.name,
+            article_item.count,
+            article_item.unit_weight * article_item.count,
             1 - article_item.duty_fee_ratio,
             price,
         ])
