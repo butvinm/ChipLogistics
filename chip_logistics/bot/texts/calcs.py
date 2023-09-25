@@ -41,7 +41,6 @@ CONTINUATION_MENU = """Добавленные позиции:
 """
 
 ITEM_DATA = """<b>Наименование:</b> {name}
-Пошлина: {duty_fee_ratio}
 Количество: {count}
 Вес единицы: {unit_weight}
 Цена за единицу: {unit_price} {price_currency}"""
