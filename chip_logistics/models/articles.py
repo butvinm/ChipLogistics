@@ -2,9 +2,18 @@
 
 
 from decimal import Decimal
+from enum import Enum
 from typing import Optional
 
 from pydantic import BaseModel, Field
+
+
+class Currency(str, Enum):  # noqa: WPS600
+    """Supported items prices currencies."""
+
+    usd = 'USD'
+
+    cyn = 'CNY'
 
 
 class ArticleInfo(BaseModel):
@@ -34,6 +43,9 @@ class ArticleItem(BaseModel):
 
     # Price per unit in rubles
     unit_price: Decimal = Field(ge=0)
+
+    # Currency of price
+    price_currency: Currency
 
     # Duty fee ratio for price
     duty_fee_ratio: Decimal = Field(default=Decimal(1), ge=1)
