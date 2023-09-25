@@ -88,7 +88,6 @@ def create_calculations_report(
             article_item.name,
             article_item.count,
             article_item.unit_weight * article_item.count,
-            1 - article_item.duty_fee_ratio,
             price,
         ])
 
