@@ -12,7 +12,7 @@ from chip_logistics.bot.handler_result import Err, HandlerResult, Ok
 from chip_logistics.bot.states.calcs import CalculationsState
 from chip_logistics.bot.views.calcs.add_item import (
     send_bad_item_unit_weight,
-    send_item_unit_price_request,
+    send_item_price_currency_request,
 )
 from chip_logistics.utils.decimal import parse_decimal
 
@@ -54,8 +54,8 @@ async def handle_item_unit_weight(
             message='Incorrect item unit weight format.',
         )
 
-    await send_item_unit_price_request(message)
+    await send_item_price_currency_request(message)
 
     await state.update_data(unit_weight=str(unit_weight))
-    await state.set_state(CalculationsState.wait_item_unit_price)
+    await state.set_state(CalculationsState.wait_item_price_currency)
     return Ok(extra={'unit_weight': unit_weight})

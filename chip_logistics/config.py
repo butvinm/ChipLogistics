@@ -30,3 +30,14 @@ def get_bot_secret() -> str:
         Telegram webhook secret.
     """
     return environ['BOT_SECRET']
+
+
+def get_fixer_api_key() -> str:
+    """Get Fixer API key from env vars.
+
+    See FIXER_API_KEY in Spacefile.
+
+    Returns:
+        Fixer API key.
+    """
+    return environ['FIXER_API_KEY']

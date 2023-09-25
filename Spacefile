@@ -13,3 +13,5 @@ micros:
           description: Token of telegram bot
         - name: BOT_SECRET
           description: telegram webhook secret
+        - name: FIXER_API_KEY
+          description: API key for fixer.io

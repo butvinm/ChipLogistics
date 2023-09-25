@@ -8,7 +8,8 @@ from deta import Deta
 from fastapi import Depends
 
 from chip_logistics.bot.factory import init_bot, init_dispatcher
-from chip_logistics.config import get_bot_token
+from chip_logistics.config import get_bot_token, get_fixer_api_key
+from chip_logistics.core.articles.currencies import CurrenciesService
 from chip_logistics.core.articles.repo import ArticlesRepository
 from chip_logistics.core.articles.service import ArticlesService
 from chip_logistics.deta.articles.repo import DetaArticlesRepository
@@ -74,15 +75,38 @@ async def get_articles_repo(
         yield repo
 
 
+async def get_currencies_service(
+    fixer_api_key: Annotated[str, Depends(get_fixer_api_key)],
+) -> AsyncGenerator[CurrenciesService, None]:
+    """Get currencies service instance.
+
+    Args:
+        fixer_api_key: Fixer API key.
+
+    Yields:
+        Currencies service.
+    """
+    async with CurrenciesService(fixer_api_key) as service:
+        yield service
+
+
+CurrenciesServiceDep = Annotated[
+    CurrenciesService,
+    Depends(get_currencies_service),
+]
+
+
 async def get_articles_service(
     repo: Annotated[ArticlesRepository, Depends(get_articles_repo)],
+    currencies_service: CurrenciesServiceDep,
 ) -> ArticlesService:
     """Get articles service instance.
 
     Args:
         repo: Articles repository.
+        currencies_service: Currencies service.
 
     Returns:
         Articles service.
     """
-    return ArticlesService(repo)
+    return ArticlesService(repo, currencies_service)
