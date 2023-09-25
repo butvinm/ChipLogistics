@@ -78,8 +78,7 @@ def create_calculations_report(
             'Наименование',
             'Количество',
             'Общий вес',
-            'Таможенная пошлина',
-            'Цена',
+            'Цена (В долларах)',
         ],
     )
 
@@ -94,7 +93,7 @@ def create_calculations_report(
         ])
 
     sheet.append([])
-    sheet.append(['Общая стоимость', total_price])
+    sheet.append(['Общая стоимость (В долларах)', total_price])
 
     adjust_columns_width(sheet)
 
