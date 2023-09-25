@@ -2,6 +2,8 @@
 
 from aiogram.filters.callback_data import CallbackData
 
+from chip_logistics.models.articles import Currency
+
 
 class StartCalcsCallback(CallbackData, prefix='calcs/open'):
     """Start calculation."""
@@ -9,6 +11,12 @@ class StartCalcsCallback(CallbackData, prefix='calcs/open'):
 
 class AddItemCallback(CallbackData, prefix='calcs/add'):
     """Start item calculations."""
+
+
+class ItemPriceCurrencyCallback(CallbackData, prefix='calcs/article/currency'):
+    """Select article item price currency."""
+
+    currency: Currency
 
 
 class SelectArticleCallback(CallbackData, prefix='calcs/article/select'):

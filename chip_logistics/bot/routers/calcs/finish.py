@@ -45,7 +45,7 @@ async def finish_calcs(
         Err - file upload fails.
     """
     context = await state.get_data()
-    report_data, report_name = get_report(
+    report_data, report_name = await get_report(
         context.get('items', []),
         context.get('customer_name', ''),
         articles_service,
@@ -69,7 +69,7 @@ async def finish_calcs(
     return Ok()
 
 
-def get_report(
+async def get_report(
     articles_data: list[dict[str, Any]],
     customer_name: str,
     articles_service: ArticlesService,
@@ -88,7 +88,7 @@ def get_report(
         ArticleItem(**item_data)
         for item_data in articles_data
     ]
-    calculations_results, total_price = articles_service.calculate_articles_price(  # noqa: E501
+    calculations_results, total_price = await articles_service.calculate_articles_price(  # noqa: E501
         articles_items,
     )
     return articles_service.create_calculations_report(

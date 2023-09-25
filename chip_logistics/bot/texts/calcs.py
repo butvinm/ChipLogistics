@@ -29,7 +29,9 @@ ASK_ITEM_UNIT_WEIGHT = 'Укажите вес одной единицы в кг:
 
 BAD_ITEM_UNIT_WEIGHT = 'Неверный формат. Вес должно быть числом. Попробуйте снова:'
 
-ASK_ITEM_UNIT_PRICE = 'Укажите цену единицы в долларах:'
+ASK_ITEM_PRICE_CURRENCY = 'Укажите валюту цены:'
+
+ASK_ITEM_UNIT_PRICE = 'Укажите цену единицы в {currency}:'
 
 BAD_ITEM_UNIT_PRICE = 'Неверный формат. Цена должна быть числом. Попробуйте снова:'
 
@@ -42,7 +44,7 @@ ITEM_DATA = """<b>Наименование:</b> {name}
 Пошлина: {duty_fee_ratio}
 Количество: {count}
 Вес единицы: {unit_weight}
-Цена за единицу: {unit_price}"""
+Цена за единицу: {unit_price} {price_currency}"""
 
 STOP_BTN = 'Завершить'
 
