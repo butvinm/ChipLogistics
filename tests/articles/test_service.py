@@ -7,6 +7,7 @@ from string import ascii_letters, digits
 from typing import AsyncGenerator, Optional
 
 import pytest
+from chip_logistics.core.articles.currencies import CurrenciesService
 
 from chip_logistics.core.articles.repo import ArticlesRepository
 from chip_logistics.core.articles.service import ArticlesService
@@ -106,16 +107,37 @@ async def repo() -> AsyncGenerator[ArticlesRepository, None]:
 
 
 @pytest.fixture
-async def service(repo: ArticlesRepository) -> ArticlesService:
+async def currencies_service(
+    fixer_api_key: str,
+) -> AsyncGenerator[CurrenciesService, None]:
+    """Get currencies service instance.
+
+    Args:
+        fixer_api_key: Fixer API key.
+
+    Yields:
+        Currencies service.
+    """
+    async with CurrenciesService(fixer_api_key) as service:
+        yield service
+
+
+@pytest.fixture
+async def service(
+    repo: ArticlesRepository,
+    currencies_service: CurrenciesService,
+) -> ArticlesService:
     """Get articles service instance.
 
     Args:
         repo: Articles repository.
+        currencies_service: Currencies service.
 
     Returns:
         Articles service.
     """
-    return ArticlesService(repo)
+    return ArticlesService(repo, currencies_service)
+
 
 TEST_NAME = 'Test Article'
 TEST_FEE = Decimal('1.5')

@@ -8,8 +8,9 @@ from decimal import Decimal
 from typing import Optional
 
 from chip_logistics.core.articles import calcs, report
+from chip_logistics.core.articles.currencies import CurrenciesService
 from chip_logistics.core.articles.repo import ArticlesRepository
-from chip_logistics.models.articles import ArticleInfo, ArticleItem
+from chip_logistics.models.articles import ArticleInfo, ArticleItem, Currency
 
 
 class ArticlesService(object):
@@ -20,13 +21,19 @@ class ArticlesService(object):
     - Calculation of price of one article item.
     """
 
-    def __init__(self, repo: ArticlesRepository) -> None:
+    def __init__(
+        self,
+        repo: ArticlesRepository,
+        currencies_service: CurrenciesService,
+    ) -> None:
         """Initialize service.
 
         Args:
             repo: Articles repository.
+            currencies_service: Utilized for items price converting.
         """
         self._repo = repo
+        self._currencies_service = currencies_service
 
     async def get_article(self, article_id: str) -> Optional[ArticleInfo]:
         """Get article by id.
@@ -114,11 +121,13 @@ class ArticlesService(object):
         """
         return calcs.calculate_article_price(article_item)
 
-    def calculate_articles_price(
+    async def calculate_articles_price(
         self,
         articles_items: list[ArticleItem],
     ) -> tuple[calcs.CalculationsResults, Decimal]:
         """Calculate prices for all items.
+
+        All prices converted to USD.
 
         Args:
             articles_items: Items for price calculating.
@@ -126,12 +135,17 @@ class ArticlesService(object):
         Returns:
             Items prices and total price.
         """
+        usd_articles_items = [
+            await self._convert_item_to_usd(article_item)
+            for article_item in articles_items
+        ]
         calculations_results = [
             (
                 article_item,
                 self.calculate_article_item_price(article_item),
             )
-            for article_item in articles_items
+            for article_item in usd_articles_items
+            if article_item is not None
         ]
         total_price = calcs.calculate_total_price(
             calculations_results,
@@ -159,3 +173,30 @@ class ArticlesService(object):
             total_price,
             customer_name,
         )
+
+    async def _convert_item_to_usd(
+        self,
+        article_item: ArticleItem,
+    ) -> Optional[ArticleItem]:
+        """Create new item instance with price converted to USD.
+
+        Args:
+            article_item: Item with price in some currency.
+
+        Returns:
+            Article item with unit_price in USD if price
+            successfully converted.
+        """
+        usd_price = await self._currencies_service.convert_price(
+            article_item.unit_price,
+            article_item.price_currency,
+            Currency.usd,
+            use_cached=True,
+        )
+        if usd_price is None:
+            return None
+
+        usd_item = ArticleItem(**article_item.model_dump())
+        usd_item.price_currency = Currency.usd
+        usd_item.unit_price = usd_price
+        return usd_item
