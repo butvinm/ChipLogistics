@@ -4,6 +4,7 @@
 from datetime import datetime
 from decimal import Decimal
 from io import BytesIO
+from typing import Union
 
 from openpyxl import Workbook
 from openpyxl.styles import Font
@@ -25,6 +26,20 @@ def generate_report_name() -> str:
     return 'Расчет-{date}.xlsx'.format(
         date=datetime.now().strftime('%H:%M-%m.%d.%Y'),
     )
+
+
+def get_formatted_number(number: Union[float, Decimal]) -> str:
+    """Return float number string representation.
+
+    Number is formatted with one digit after point.
+
+    Args:
+        number: Number to format.
+
+    Returns:
+        Formatted string.
+    """
+    return '{0:.1f}'.format(number)
 
 
 def add_header(sheet: Worksheet, columns_names: list[str]) -> None:
@@ -88,11 +103,14 @@ def create_calculations_report(
             article_item.name,
             article_item.count,
             article_item.unit_weight * article_item.count,
-            price,
+            get_formatted_number(price),
         ])
 
     sheet.append([])
-    sheet.append(['Общая стоимость (В долларах)', total_price])
+    sheet.append([
+        'Общая стоимость (В долларах)',
+        get_formatted_number(total_price),
+    ])
 
     adjust_columns_width(sheet)
 
