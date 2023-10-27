@@ -11,6 +11,12 @@ CalculationsResults = list[tuple[ArticleItem, Decimal]]
 AIR_DELIVERY_PRICE_PER_KG = 12
 CUSTOM_FEE_RATIO = Decimal(215) / Decimal(1000)  # noqa: WPS432
 PRICE_MARGIN_RATIO = Decimal(20) / Decimal(100)  # noqa: WPS432
+RUSSIAN_DELIVERY_RATIO = (
+    (100, Decimal(6)),
+    (50, Decimal(5)),
+    (25, Decimal(4)),
+    (5, Decimal(3)),
+)
 
 
 def calculate_air_delivery_price(total_weight: Decimal) -> Decimal:
@@ -69,6 +75,28 @@ def calculate_duty_fee(
     return total_price * (duty_fee_ratio - 1)
 
 
+def calculate_russian_delivery_price(
+    air_delivery_price: Decimal,
+    total_weight: Decimal,
+) -> Decimal:
+    """Calculate Russian delivery price.
+
+    See RUSSIAN_DELIVERY_RATIO for transformations rules.
+
+    Args:
+        air_delivery_price: The air delivery price.
+        total_weight: The total weight of the item.
+
+    Returns:
+        Russian delivery price.
+    """
+    for threshold, ratio in RUSSIAN_DELIVERY_RATIO:
+        if total_weight > threshold:
+            return air_delivery_price / ratio
+
+    return air_delivery_price
+
+
 def calculate_price_with_fee(
     invoice_and_delivery_for_custom: Decimal,
     russia_delivery_price: Decimal,
@@ -115,7 +143,10 @@ def calculate_article_price(article_item: ArticleItem) -> Decimal:
         total_price,
         article_item.duty_fee_ratio,
     )
-    russia_delivery_price = air_delivery_price
+    russia_delivery_price = calculate_russian_delivery_price(
+        air_delivery_price,
+        total_weight,
+    )
 
     price_with_fee = calculate_price_with_fee(
         invoice_and_delivery_for_custom,
@@ -123,7 +154,8 @@ def calculate_article_price(article_item: ArticleItem) -> Decimal:
         custom_fee,
         duty_fee,
     )
-    return price_with_fee * (1 + PRICE_MARGIN_RATIO)
+    price_with_margin = price_with_fee * (1 + PRICE_MARGIN_RATIO)
+    return round(price_with_margin, 1)
 
 
 def calculate_total_price(
