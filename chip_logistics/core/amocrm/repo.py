@@ -1,13 +1,14 @@
-"""AmoCRM Service data repository interface."""
+"""AmoCRM client data repository interface."""
 
 
-from typing import Any, Protocol
+from typing import Any, Protocol, runtime_checkable
 
 from chip_logistics.core.amocrm.models import Credentials
 
 
+@runtime_checkable
 class AmoCRMRepository(Protocol):
-    """AmoCRM Service data repository interface."""
+    """AmoCRM client data repository interface."""
 
     async def get_credentials(self) -> Credentials:
         """Get AmoCRM integration credentials.

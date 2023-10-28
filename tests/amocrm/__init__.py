@@ -1,4 +1,4 @@
-"""AmoCRM service tests.
+"""AmoCRM client tests.
 
 Integration tests require AmoCRM organization with
 installed "Integration" (read AmoCRM docs).

@@ -12,7 +12,8 @@ from chip_logistics.bot.filters.extract_message import ExtractMessage
 from chip_logistics.bot.handler_result import HandlerResult, Ok
 from chip_logistics.bot.states.calcs import CalculationsState
 from chip_logistics.bot.views.calcs.finish import send_calcs_report
-from chip_logistics.core.amocrm.service import AmoCRMService
+from chip_logistics.core.amocrm.api import attach_file_to_contact, upload_file
+from chip_logistics.core.amocrm.client import AmoCRMClient
 from chip_logistics.core.articles.models import ArticleItem
 from chip_logistics.core.articles.service import ArticlesService
 
@@ -28,7 +29,7 @@ async def finish_calcs(
     callback_query: CallbackQuery,
     message: Message,
     state: FSMContext,
-    amocrm_service: AmoCRMService,
+    amocrm_client: AmoCRMClient,
     articles_service: ArticlesService,
 ) -> HandlerResult:
     """Send contact select menu.
@@ -37,7 +38,7 @@ async def finish_calcs(
         callback_query: Open menu query.
         message: Message where query from.
         state: Current FSM state.
-        amocrm_service: AmoCRM service.
+        amocrm_client: AmoCRM client data to access API.
         articles_service: Articles service.
 
     Returns:
@@ -57,7 +58,7 @@ async def finish_calcs(
             report_data,
             report_name,
             contact_id,
-            amocrm_service,
+            amocrm_client,
         )
 
     await send_calcs_report(
@@ -102,7 +103,7 @@ async def upload_report_file_to_amocrm(
     report_data: bytes,
     report_name: str,
     contact_id: int,
-    amocrm_service: AmoCRMService,
+    amocrm_client: AmoCRMClient,
 ) -> None:
     """Upload report to AmoCRM and attach to contact.
 
@@ -110,13 +111,15 @@ async def upload_report_file_to_amocrm(
         report_data: Report file data.
         report_name: Report file name.
         contact_id: Contact identifier.
-        amocrm_service: AmoCRM service.
+        amocrm_client: AmoCRM client data to access API.
     """
-    report_file_uuid = await amocrm_service.upload_file(
+    report_file_uuid = await upload_file(
+        amocrm_client,
         file_name=report_name,
         file_data=report_data,
     )
-    await amocrm_service.attach_file_to_contact(
+    await attach_file_to_contact(
+        amocrm_client,
         contact_id=contact_id,
         file_uuid=report_file_uuid,
     )

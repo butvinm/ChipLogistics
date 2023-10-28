@@ -20,7 +20,8 @@ from chip_logistics.bot.views.calcs.contact_select import (
     send_search_query_request,
     send_search_result,
 )
-from chip_logistics.core.amocrm.service import AmoCRMService
+from chip_logistics.core.amocrm.api import find_contacts
+from chip_logistics.core.amocrm.client import AmoCRMClient
 
 router = Router(name='calcs/contacts')
 
@@ -83,7 +84,7 @@ async def handle_search_query(
     message: Message,
     text: str,
     state: FSMContext,
-    amocrm_service: AmoCRMService,
+    amocrm_client: AmoCRMClient,
 ) -> HandlerResult:
     """Ask for search query.
 
@@ -91,13 +92,13 @@ async def handle_search_query(
         message: Message where query from.
         text: Search query.
         state: Current FSM state.
-        amocrm_service: AmoCRM service.
+        amocrm_client: AmoCRM client data to access API.
 
     Returns:
         Ok - search finish successfully.
         Err - search failed.
     """
-    contacts = await amocrm_service.find_contacts(query=text)
+    contacts = await find_contacts(amocrm_client, query=text)
     await send_search_result(message, contacts)
     await state.set_state(CalculationsState.wait_contact_select)
     return Ok(extra={'query': text, 'contacts': contacts})

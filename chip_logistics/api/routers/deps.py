@@ -6,8 +6,8 @@ from typing import Annotated, AsyncGenerator
 from deta import Deta
 from fastapi import Depends
 
+from chip_logistics.core.amocrm.client import AmoCRMClient, init_client
 from chip_logistics.core.amocrm.repo import AmoCRMRepository
-from chip_logistics.core.amocrm.service import AmoCRMService
 from chip_logistics.deta.amocrm.repo import DetaAmoCRMRepository
 from chip_logistics.deta.deta import get_deta
 
@@ -27,16 +27,16 @@ async def get_amocrm_repo(
         yield repo
 
 
-async def get_amocrm_service(
+async def get_amocrm_client(
     repo: Annotated[AmoCRMRepository, Depends(get_amocrm_repo)],
-) -> AsyncGenerator[AmoCRMService, None]:
-    """Get AmoCRMService instance.
+) -> AsyncGenerator[AmoCRMClient, None]:
+    """Get AmoCRMClient instance.
 
     Args:
         repo: AmoCRM repository
 
     Yields:
-        AsyncGenerator[AmoCRMService, None]: _description_
+        AsyncGenerator[AmoCRMClient, None]: AMOCrm client.
     """
-    async with AmoCRMService.init(repo) as service:
+    async with init_client(repo) as service:
         yield service

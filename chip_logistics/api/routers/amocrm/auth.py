@@ -8,8 +8,9 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
-from chip_logistics.api.routers.deps import get_amocrm_service
-from chip_logistics.core.amocrm.service import AmoCRMService
+from chip_logistics.api.routers.deps import get_amocrm_client
+from chip_logistics.core.amocrm.api import authorize, refresh_access_token
+from chip_logistics.core.amocrm.client import AmoCRMClient
 
 router = APIRouter(prefix='/auth')
 
@@ -43,26 +44,26 @@ async def handle_authorization(
 
 
 @router.post('/')
-async def authorize(
+async def authorize_client(
     auth_code: str,
-    service: Annotated[AmoCRMService, Depends(get_amocrm_service)],
+    client: Annotated[AmoCRMClient, Depends(get_amocrm_client)],
 ) -> None:
-    """Authorize application with provided auth code.
+    """Authorize AmoCRM client with provided auth code.
 
     Args:
         auth_code: AmoCRM "Integration" auth code.
-        service: AmoCRM service.
+        client: AmoCRM client.
     """
-    await service.authorize(auth_code)
+    await authorize(client, auth_code)
 
 
 @router.patch('/')
-async def refresh_token(
-    service: Annotated[AmoCRMService, Depends(get_amocrm_service)],
+async def refresh_auth_token(
+    client: Annotated[AmoCRMClient, Depends(get_amocrm_client)],
 ) -> None:
     """Refresh authorization token.
 
     Args:
-        service: AmoCRM service.
+        client: AmoCRM client.
     """
-    await service.refresh_access_token()
+    await refresh_access_token(client)
