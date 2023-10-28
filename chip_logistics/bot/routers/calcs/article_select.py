@@ -16,15 +16,15 @@ from chip_logistics.bot.filters.extract_message import ExtractMessage
 from chip_logistics.bot.filters.text_message import TextMessage
 from chip_logistics.bot.handler_result import Err, HandlerResult, Ok
 from chip_logistics.bot.states.calcs import CalculationsState
+from chip_logistics.bot.views.calcs.add_item import send_item_count_request
 from chip_logistics.bot.views.calcs.article_select import (
     send_article_request,
     send_bad_duty_fee_ratio,
     send_duty_fee_ratio_request,
     send_name_request,
 )
-from chip_logistics.bot.views.calcs.add_item import send_item_count_request
+from chip_logistics.core.articles.models import ArticleInfo
 from chip_logistics.core.articles.service import ArticlesService
-from chip_logistics.models.articles import ArticleInfo
 from chip_logistics.utils.decimal import parse_decimal
 
 router = Router(name='calcs/article')

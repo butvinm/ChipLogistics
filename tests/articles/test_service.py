@@ -11,7 +11,7 @@ from chip_logistics.core.articles.currencies import CurrenciesService
 
 from chip_logistics.core.articles.repo import ArticlesRepository
 from chip_logistics.core.articles.service import ArticlesService
-from chip_logistics.models.articles import ArticleInfo, ArticleItem
+from chip_logistics.core.articles.models import ArticleInfo, ArticleItem
 from tests.articles.conftest import test_articles
 
 

@@ -3,7 +3,7 @@
 
 from typing import Any, Protocol
 
-from chip_logistics.models.amocrm import Credentials
+from chip_logistics.core.amocrm.models import Credentials
 
 
 class AmoCRMRepository(Protocol):

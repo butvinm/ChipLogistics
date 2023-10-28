@@ -9,8 +9,12 @@ from typing import Optional
 
 from chip_logistics.core.articles import calcs, report
 from chip_logistics.core.articles.currencies import CurrenciesService
+from chip_logistics.core.articles.models import (
+    ArticleInfo,
+    ArticleItem,
+    Currency,
+)
 from chip_logistics.core.articles.repo import ArticlesRepository
-from chip_logistics.models.articles import ArticleInfo, ArticleItem, Currency
 
 
 class ArticlesService(object):

@@ -7,7 +7,7 @@ from os import environ
 
 import pytest
 
-from chip_logistics.models.articles import ArticleItem, Currency
+from chip_logistics.core.articles.models import ArticleItem, Currency
 
 test_articles = (
     (

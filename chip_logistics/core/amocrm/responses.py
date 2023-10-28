@@ -5,7 +5,7 @@ from typing import Any
 
 from pydantic import BaseModel, ValidationError
 
-from chip_logistics.models.amocrm import Contact
+from chip_logistics.core.amocrm.models import Contact
 
 
 class AuthResponse(BaseModel):

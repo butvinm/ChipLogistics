@@ -2,7 +2,7 @@
 
 from aiogram.filters.callback_data import CallbackData
 
-from chip_logistics.models.articles import Currency
+from chip_logistics.core.articles.models import Currency
 
 
 class StartCalcsCallback(CallbackData, prefix='calcs/open'):

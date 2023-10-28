@@ -22,8 +22,8 @@ from chip_logistics.bot.views.articles.create import (
     send_duty_fee_ratio_request,
     send_name_request,
 )
+from chip_logistics.core.articles.models import ArticleInfo
 from chip_logistics.core.articles.service import ArticlesService
-from chip_logistics.models.articles import ArticleInfo
 from chip_logistics.utils.decimal import parse_decimal
 
 router = Router(name='articles/create')

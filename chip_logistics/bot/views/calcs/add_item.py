@@ -13,7 +13,7 @@ from chip_logistics.bot.texts.calcs import (
     BAD_ITEM_UNIT_PRICE,
     BAD_ITEM_UNIT_WEIGHT,
 )
-from chip_logistics.models.articles import Currency
+from chip_logistics.core.articles.models import Currency
 
 
 async def send_item_name_request(

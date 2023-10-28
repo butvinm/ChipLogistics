@@ -7,7 +7,7 @@ import pytest
 
 from chip_logistics.core.amocrm.repo import AmoCRMRepository
 from chip_logistics.core.amocrm.service import AmoCRMService
-from chip_logistics.models.amocrm import Credentials
+from chip_logistics.core.amocrm.models import Credentials
 
 
 class MockAmoCRMRepository(AmoCRMRepository):

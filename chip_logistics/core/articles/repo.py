@@ -3,7 +3,7 @@
 
 from typing import Any, Optional, Protocol
 
-from chip_logistics.models.articles import ArticleInfo
+from chip_logistics.core.articles.models import ArticleInfo
 
 
 class ArticlesRepository(Protocol):

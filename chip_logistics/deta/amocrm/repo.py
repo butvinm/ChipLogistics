@@ -5,8 +5,8 @@ from typing import Any
 
 from deta import Deta
 
+from chip_logistics.core.amocrm.models import Credentials
 from chip_logistics.core.amocrm.repo import AmoCRMRepository
-from chip_logistics.models.amocrm import Credentials
 
 
 class DetaAmoCRMRepository(AmoCRMRepository):

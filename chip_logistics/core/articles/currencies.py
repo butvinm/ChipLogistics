@@ -6,7 +6,7 @@ from typing import Any, Optional
 
 from aiohttp import ClientResponse, ClientResponseError, ClientSession
 
-from chip_logistics.models.articles import Currency
+from chip_logistics.core.articles.models import Currency
 
 
 class CurrenciesService(object):

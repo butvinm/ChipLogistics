@@ -10,6 +10,7 @@ from typing import AsyncGenerator, Optional, Union
 
 from aiohttp import ClientSession
 
+from chip_logistics.core.amocrm.models import Contact, Credentials
 from chip_logistics.core.amocrm.repo import AmoCRMRepository
 from chip_logistics.core.amocrm.responses import (
     AuthResponse,
@@ -18,7 +19,6 @@ from chip_logistics.core.amocrm.responses import (
     FileUploadResponse,
     PartUploadResponse,
 )
-from chip_logistics.models.amocrm import Contact, Credentials
 
 
 class AmoCRMService(object):  # noqa: WPS214

@@ -13,7 +13,7 @@ from chip_logistics.bot.texts.articles import (
     DELETE_BTN,
     DELETED_MESSAGE,
 )
-from chip_logistics.models.articles import ArticleInfo
+from chip_logistics.core.articles.models import ArticleInfo
 
 back_to_list_btns = [
     [

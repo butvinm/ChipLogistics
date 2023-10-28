@@ -13,8 +13,8 @@ from chip_logistics.bot.handler_result import HandlerResult, Ok
 from chip_logistics.bot.states.calcs import CalculationsState
 from chip_logistics.bot.views.calcs.finish import send_calcs_report
 from chip_logistics.core.amocrm.service import AmoCRMService
+from chip_logistics.core.articles.models import ArticleItem
 from chip_logistics.core.articles.service import ArticlesService
-from chip_logistics.models.articles import ArticleItem
 
 router = Router(name='calcs/finish')
 

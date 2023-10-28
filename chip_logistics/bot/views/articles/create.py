@@ -11,13 +11,13 @@ from chip_logistics.bot.texts.articles import (
     ASK_DUTY_FEE_RATIO,
     ASK_NAME,
     BACK_TO_ARTICLES_MENU,
+    BAD_DUTY_FEE_RATIO,
     CONFIRM_ARTICLE_CREATION,
     CONFIRM_CREATION_BTN,
     CREATED_ARTICLE,
     DISMISS_CREATION_BTN,
-    BAD_DUTY_FEE_RATIO,
 )
-from chip_logistics.models.articles import ArticleInfo
+from chip_logistics.core.articles.models import ArticleInfo
 
 
 async def send_name_request(message: Message) -> None:

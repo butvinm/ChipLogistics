@@ -7,9 +7,9 @@ from typing import Optional
 
 from deta import Deta
 
+from chip_logistics.core.articles.models import ArticleInfo
 from chip_logistics.core.articles.repo import ArticlesRepository
 from chip_logistics.deta.models import model_dump
-from chip_logistics.models.articles import ArticleInfo
 
 
 class DetaArticlesRepository(ArticlesRepository):

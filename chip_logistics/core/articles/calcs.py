@@ -3,7 +3,7 @@
 import math
 from decimal import Decimal
 
-from chip_logistics.models.articles import ArticleItem
+from chip_logistics.core.articles.models import ArticleItem
 
 CalculationsResults = list[tuple[ArticleItem, Decimal]]
 
