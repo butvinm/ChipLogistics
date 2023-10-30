@@ -18,7 +18,7 @@ from chip_logistics.bot.texts.calcs import (
     SEARCH_RESULT,
     SKIP_CONTACT_BTN,
 )
-from chip_logistics.models.amocrm import Contact
+from chip_logistics.core.amocrm.models import Contact
 
 select_menu_kb = InlineKeyboardMarkup(
     inline_keyboard=[

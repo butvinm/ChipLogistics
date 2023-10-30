@@ -13,7 +13,7 @@ from chip_logistics.bot.texts.calcs import (
     ITEM_DATA,
     STOP_BTN,
 )
-from chip_logistics.models.articles import ArticleItem
+from chip_logistics.core.articles.models import ArticleItem
 
 
 def build_continuation_menu_text(articles_items: list[ArticleItem]) -> str:

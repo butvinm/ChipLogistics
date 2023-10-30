@@ -19,8 +19,8 @@ from chip_logistics.bot.views.calcs.add_item import (
 from chip_logistics.bot.views.calcs.continuation_menu import (
     send_continuation_menu,
 )
+from chip_logistics.core.articles.models import ArticleItem
 from chip_logistics.deta.models import model_dump
-from chip_logistics.models.articles import ArticleItem
 from chip_logistics.utils.decimal import parse_decimal
 
 router = Router(name='calcs/add_item/unit_price')

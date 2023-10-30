@@ -11,7 +11,7 @@ from openpyxl.styles import Font
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.worksheet import Worksheet
 
-from chip_logistics.models.articles import ArticleItem
+from chip_logistics.core.articles.models import ArticleItem
 
 # Multiplier of content size to adjust column width
 COLUMN_WIDTH_RATIO = 1.3

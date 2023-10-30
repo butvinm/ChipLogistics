@@ -1,4 +1,4 @@
-"""Tests for articles service."""
+"""Tests for articles module."""
 
 
 from decimal import Decimal
@@ -7,15 +7,23 @@ from string import ascii_letters, digits
 from typing import AsyncGenerator, Optional
 
 import pytest
-from chip_logistics.core.articles.currencies import CurrenciesService
 
-from chip_logistics.core.articles.repo import ArticlesRepository
-from chip_logistics.core.articles.service import ArticlesService
-from chip_logistics.models.articles import ArticleInfo, ArticleItem
-from tests.articles.conftest import test_articles
+from chip_logistics.core.articles.articles import (
+    create_article,
+    delete_article,
+    find_articles,
+)
+from chip_logistics.core.articles.models import ArticleInfo
+from chip_logistics.core.articles.repo import ArticlesRepo
+from chip_logistics.utils.closing import AClosing
+from tests.articles.conftest import (
+    ARTICLE_NAME_PREFIX,
+    gen_article_name,
+    test_articles,
+)
 
 
-class ArticlesRepositoryStub(ArticlesRepository):
+class ArticlesRepoStub(ArticlesRepo, AClosing):
     """Stub of articles repository.
 
     Articles stored in the dictionary.
@@ -75,7 +83,33 @@ class ArticlesRepositoryStub(ArticlesRepository):
         """
         return list(self._articles.values())
 
-    async def close(self) -> None:
+    async def find_articles(
+        self,
+        query: Optional[str] = None,
+    ) -> list[ArticleInfo]:
+        """Find articles by name.
+
+        Search is case and word position insensitive.
+
+        So, for names ['fOo', 'Bar', 'bar foo'] query
+        'foo' would find ['fOo', 'bar foo'].
+
+        Args:
+            query: Name query. If None, all articles returned.
+
+        Returns:
+            List of found articles.
+        """
+        articles = await self.get_articles()
+        if query is None:
+            return articles
+
+        return [
+            article for article in articles
+            if query.lower() in article.name.lower()
+        ]
+
+    async def aclose(self) -> None:
         """Close repository and clean resources."""
         self._articles = {}
 
@@ -90,7 +124,7 @@ class ArticlesRepositoryStub(ArticlesRepository):
 
 
 @pytest.fixture
-async def repo() -> AsyncGenerator[ArticlesRepository, None]:
+async def repo() -> AsyncGenerator[ArticlesRepo, None]:
     """Get article repo stub instance.
 
     Repository is prefilled with test_articles.
@@ -98,7 +132,7 @@ async def repo() -> AsyncGenerator[ArticlesRepository, None]:
     Yields:
         Articles repository stub.
     """
-    async with ArticlesRepositoryStub() as repo:
+    async with ArticlesRepoStub() as repo:
         for article, _ in test_articles:
             await repo.put_article(
                 ArticleInfo(id=None, **article.model_dump()),
@@ -106,44 +140,11 @@ async def repo() -> AsyncGenerator[ArticlesRepository, None]:
         yield repo
 
 
-@pytest.fixture
-async def currencies_service(
-    fixer_api_key: str,
-) -> AsyncGenerator[CurrenciesService, None]:
-    """Get currencies service instance.
-
-    Args:
-        fixer_api_key: Fixer API key.
-
-    Yields:
-        Currencies service.
-    """
-    async with CurrenciesService(fixer_api_key) as service:
-        yield service
-
-
-@pytest.fixture
-async def service(
-    repo: ArticlesRepository,
-    currencies_service: CurrenciesService,
-) -> ArticlesService:
-    """Get articles service instance.
-
-    Args:
-        repo: Articles repository.
-        currencies_service: Currencies service.
-
-    Returns:
-        Articles service.
-    """
-    return ArticlesService(repo, currencies_service)
-
-
-TEST_NAME = 'Test Article'
+TEST_NAME = gen_article_name()
 TEST_FEE = Decimal('1.5')
 
 
-async def test_create_article(service: ArticlesService) -> None:
+async def test_create_article(repo: ArticlesRepo) -> None:
     """
     Test the create_article method of ArticlesService.
 
@@ -151,14 +152,14 @@ async def test_create_article(service: ArticlesService) -> None:
     a new article and returns it with the expected attributes.
 
     Args:
-        service: ArticlesService instance with a mock repository.
+        repo: Mocked articles storage.
     """
-    article = await service.create_article(TEST_NAME, TEST_FEE)
+    article = await create_article(repo, TEST_NAME, TEST_FEE)
     assert article.name == TEST_NAME
     assert article.duty_fee_ratio == TEST_FEE
 
 
-async def test_find_articles(service: ArticlesService) -> None:
+async def test_find_articles(repo: ArticlesRepo) -> None:
     """
     Test the find_articles method of ArticlesService.
 
@@ -166,19 +167,19 @@ async def test_find_articles(service: ArticlesService) -> None:
     correctly filters articles based on a query.
 
     Args:
-        service: ArticlesService instance with a mock repository.
+        repo: Mocked articles storage.
     """
-    articles = await service.find_articles('Article')
+    articles = await find_articles(repo, ARTICLE_NAME_PREFIX)
     assert len(articles) == len(test_articles)
 
-    articles = await service.find_articles('8')
+    articles = await find_articles(repo, test_articles[0][0].name)
     assert len(articles) == 1
 
+    articles = await find_articles(repo, 'ENDOFUNCTOR!!!')
+    assert len(articles) == 0
 
-async def test_delete_article(
-    service: ArticlesService,
-    repo: ArticlesRepository,
-) -> None:
+
+async def test_delete_article(repo: ArticlesRepo) -> None:
     """
     Test the delete_article method of ArticlesService.
 
@@ -186,35 +187,11 @@ async def test_delete_article(
     correctly deletes an article and returns True.
 
     Args:
-        service: ArticlesService instance with a mock repository.
-        repo: Mock repository instance.
+        repo: Mocked articles storage.
     """
     article = (await repo.get_articles())[0]
     assert article.id is not None
 
-    deleted = await service.delete_article(article.id)
+    deleted = await delete_article(repo, article.id)
     assert deleted is True
     assert await repo.get_article(article.id) is None
-
-
-@pytest.mark.parametrize(
-    'article,expected_price',
-    test_articles,
-)
-async def test_calculate_article_item_price(
-    article: ArticleItem,
-    expected_price: Decimal,
-    service: ArticlesService,
-) -> None:
-    """
-    Test the calculate_article_item_price method of ArticlesService.
-
-    This test checks if the calculate_article_item_price method
-    correctly calculates the price of an article item.
-
-    Args:
-        article: The article for which to calculate the price.
-        expected_price: Expected function result.
-        service: ArticlesService instance with a mock repository.
-    """
-    assert service.calculate_article_item_price(article) == expected_price

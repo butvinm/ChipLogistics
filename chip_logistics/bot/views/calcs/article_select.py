@@ -14,7 +14,7 @@ from chip_logistics.bot.texts.calcs import (
     ASK_NAME,
     BAD_DUTY_FEE_RATIO,
 )
-from chip_logistics.models.articles import ArticleInfo
+from chip_logistics.core.articles.models import ArticleInfo
 
 
 def build_article_select_kb(

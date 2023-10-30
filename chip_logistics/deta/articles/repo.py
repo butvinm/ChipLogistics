@@ -1,4 +1,4 @@
-"""ArticlesRepository based on Deta Base."""
+"""ArticlesRepo based on Deta Base."""
 
 
 from secrets import choice
@@ -7,13 +7,13 @@ from typing import Optional
 
 from deta import Deta
 
-from chip_logistics.core.articles.repo import ArticlesRepository
+from chip_logistics.core.articles.models import ArticleInfo
+from chip_logistics.core.articles.repo import ArticlesRepo
 from chip_logistics.deta.models import model_dump
-from chip_logistics.models.articles import ArticleInfo
 
 
-class DetaArticlesRepository(ArticlesRepository):
-    """ArticlesRepository based on Deta Base.
+class DetaArticlesRepo(ArticlesRepo):
+    """ArticlesRepobased on Deta Base.
 
     Articles are stored in the `articles` base.
     """
@@ -42,7 +42,7 @@ class DetaArticlesRepository(ArticlesRepository):
         """
         if article.id is None:
             article = ArticleInfo(**article.model_dump())
-            article.id = self._generate_id()
+            article.id = _generate_id()
 
         article_data = await self._base.put(
             data=model_dump(article),
@@ -60,6 +60,32 @@ class DetaArticlesRepository(ArticlesRepository):
         return [
             ArticleInfo(**article_data)
             for article_data in articles_result.items
+        ]
+
+    async def find_articles(
+        self,
+        query: Optional[str] = None,
+    ) -> list[ArticleInfo]:
+        """Find articles by name.
+
+        Search is case and word position insensitive.
+
+        So, for names ['fOo', 'Bar', 'bar foo'] query
+        'foo' would find ['fOo', 'bar foo'].
+
+        Args:
+            query: Name query. If None, all articles returned.
+
+        Returns:
+            List of found articles.
+        """
+        articles = await self.get_articles()
+        if query is None:
+            return articles
+
+        return [
+            article for article in articles
+            if query.lower() in article.name.lower()
         ]
 
     async def get_article(self, article_id: str) -> Optional[ArticleInfo]:
@@ -90,16 +116,17 @@ class DetaArticlesRepository(ArticlesRepository):
         await self._base.delete(article_id)
         return article is not None
 
-    async def close(self) -> None:
+    async def aclose(self) -> None:
         """Close base and clean resources."""
         await self._base.close()
 
-    def _generate_id(self) -> str:
-        """Generate random article id.
 
-        Returns:
-            Random 12-chars string.
-        """
-        length = 12
-        alphabet = ascii_letters + digits
-        return ''.join(choice(alphabet) for _ in range(length))
+def _generate_id() -> str:
+    """Generate random article id.
+
+    Returns:
+        Random 12-chars string.
+    """
+    length = 12
+    alphabet = ascii_letters + digits
+    return ''.join(choice(alphabet) for _ in range(length))

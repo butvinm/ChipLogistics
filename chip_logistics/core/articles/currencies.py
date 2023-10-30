@@ -6,10 +6,11 @@ from typing import Any, Optional
 
 from aiohttp import ClientResponse, ClientResponseError, ClientSession
 
-from chip_logistics.models.articles import Currency
+from chip_logistics.core.articles.models import Currency
+from chip_logistics.utils.closing import AClosing
 
 
-class CurrenciesService(object):
+class CurrenciesService(AClosing):
     """Currencies service.
 
     Provide functionality for access currencies info and convert prices.
@@ -34,25 +35,9 @@ class CurrenciesService(object):
         )
         self.last_rates: dict[tuple[Currency, Currency], Decimal] = {}
 
-    async def close(self) -> None:
+    async def aclose(self) -> None:
         """Close session."""
         await self._session.close()
-
-    async def __aenter__(self) -> 'CurrenciesService':
-        """Enter context manager.
-
-        Returns:
-            Currencies service instance.
-        """
-        return self
-
-    async def __aexit__(self, *args: Any) -> None:
-        """Exit context manager.
-
-        Args:
-            args: Exception info.
-        """
-        await self.close()
 
     async def get_exchange_rate(
         self,

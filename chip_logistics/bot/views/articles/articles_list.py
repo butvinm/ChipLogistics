@@ -8,7 +8,7 @@ from chip_logistics.bot.callbacks.articles import (
     OpenArticlesMenuCallback,
 )
 from chip_logistics.bot.texts.articles import BACK_TO_ARTICLES_MENU, LIST_TITLE
-from chip_logistics.models.articles import ArticleInfo
+from chip_logistics.core.articles.models import ArticleInfo
 
 back_to_articles_menu_kb = [
     [

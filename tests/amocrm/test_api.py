@@ -1,17 +1,23 @@
-"""Test AMoCRMService class."""
+"""Test AMOCrm API module."""
 
 
 from typing import AsyncGenerator
 
 import pytest
 
-from chip_logistics.core.amocrm.repo import AmoCRMRepository
-from chip_logistics.core.amocrm.service import AmoCRMService
-from chip_logistics.models.amocrm import Credentials
+from chip_logistics.core.amocrm.api import (
+    attach_file_to_contact,
+    authorize,
+    find_contacts,
+    upload_file,
+)
+from chip_logistics.core.amocrm.client import AmoCRMClient, init_client
+from chip_logistics.core.amocrm.models import Credentials
+from chip_logistics.core.amocrm.repo import AmoCRMRepo
 
 
-class MockAmoCRMRepository(AmoCRMRepository):
-    """Mock repository for the AmoCRMService tests."""
+class MockAmoCRMRepo(AmoCRMRepo):
+    """Mock of the repository."""
 
     def __init__(self, credentials: Credentials) -> None:
         """Initialize the mock repository.
@@ -37,7 +43,7 @@ class MockAmoCRMRepository(AmoCRMRepository):
         """
         self._credentials = credentials
 
-    async def close(self) -> None:
+    async def aclose(self) -> None:
         """Delete credentials."""
         self._credentials = None  # type: ignore
 
@@ -45,7 +51,7 @@ class MockAmoCRMRepository(AmoCRMRepository):
 @pytest.fixture(scope='module')
 async def amo_repo(
     credentials: Credentials,
-) -> AsyncGenerator[AmoCRMRepository, None]:
+) -> AsyncGenerator[AmoCRMRepo, None]:
     """Return a mock repository.
 
     Args:
@@ -54,102 +60,106 @@ async def amo_repo(
     Yields:
         Mock repository.
     """
-    async with MockAmoCRMRepository(credentials) as repo:
+    async with MockAmoCRMRepo(credentials) as repo:
         yield repo
 
 
 @pytest.fixture(scope='module')
-async def amo_service(
-    amo_repo: AmoCRMRepository,
-) -> AsyncGenerator[AmoCRMService, None]:
-    """Return a service with a mock repository.
+async def amo_client(
+    amo_repo: AmoCRMRepo,
+) -> AsyncGenerator[AmoCRMClient, None]:
+    """Return a clinet with a mock repository.
 
     Args:
         amo_repo: Mock repository.
 
     Yields:
-        Service with a mock repository.
+        Client with a mock repository.
     """
-    async with AmoCRMService.init(amo_repo) as service:
-        yield service
+    async with init_client(amo_repo) as client:
+        yield client
 
 
 async def test_authorize(
     amocrm_auth_code: str,
-    amo_service: AmoCRMService,
+    amo_client: AmoCRMClient,
 ) -> None:
-    """Test the authorize method.
+    """Test the authorize function.
 
     Args:
         amocrm_auth_code: AmoCRM authorization code.
-        amo_service: Service with a mock repository.
+        amo_client: Client with a mock repository.
     """
-    await amo_service.authorize(amocrm_auth_code)
-    assert amo_service._credentials.access_token is not None
-    assert amo_service._credentials.refresh_token is not None
+    await authorize(amo_client, amocrm_auth_code)
+    assert amo_client.credentials.access_token is not None
+    assert amo_client.credentials.refresh_token is not None
 
 
 async def test_find_contacts(
-    amo_service: AmoCRMService,
+    amo_client: AmoCRMClient,
 ) -> None:
-    """Test the find_contacts method.
+    """Test the find_contacts function.
 
     Args:
-        amo_service: Service with a mock repository.
+        amo_client: Client with a mock repository.
     """
-    contacts = await amo_service.find_contacts()
+    contacts = await find_contacts(amo_client)
     assert len(contacts) == 3
 
-    contacts = await amo_service.find_contacts('John')
+    contacts = await find_contacts(amo_client, 'John')
     assert len(contacts) == 1
 
-    contacts = await amo_service.find_contacts('jOhN')
+    contacts = await find_contacts(amo_client, 'jOhN')
     assert len(contacts) == 1
 
-    contacts = await amo_service.find_contacts('Not Exist')
+    contacts = await find_contacts(amo_client, 'Not Exist')
     assert not contacts
 
 
 async def test_upload_file(
-    amo_service: AmoCRMService,
+    amo_client: AmoCRMClient,
 ) -> None:
-    """Test the upload_file method.
+    """Test the upload_file function.
 
     Args:
-        amo_service: Service with a mock repository.
+        amo_client: Client with a mock repository.
     """
     file_data = b'0' * 1024
-    file_uuid = await amo_service.upload_file(
+    file_uuid = await upload_file(
+        amo_client,
         'test_file.txt',
         file_data,
     )
 
-    updated_file_uuid = await amo_service.upload_file(
+    updated_file_uuid = await upload_file(
+        amo_client,
         'test_file.txt',
-        file_data + b'0',
+        file_data[:-1],
         file_uuid=file_uuid,
     )
     assert updated_file_uuid == file_uuid
 
 
 async def test_attach_file_to_contact(
-    amo_service: AmoCRMService,
+    amo_client: AmoCRMClient,
 ) -> None:
-    """Test the attach_file_to_contact method.
+    """Test the attach_file_to_contact function.
 
     Args:
-        amo_service: Service with a mock repository.
+        amo_client: Client with a mock repository.
     """
     file_data = b'0' * 1024
-    file_uuid = await amo_service.upload_file(
+    file_uuid = await upload_file(
+        amo_client,
         'test_file.txt',
         file_data,
     )
 
-    contacts = await amo_service.find_contacts()
+    contacts = await find_contacts(amo_client)
     contact = contacts.pop(0)
 
-    await amo_service.attach_file_to_contact(
+    await attach_file_to_contact(
+        amo_client,
         contact_id=contact.id,
         file_uuid=file_uuid,
     )
