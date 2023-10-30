@@ -15,7 +15,7 @@ from chip_logistics.bot.views.articles.article import (
     send_deleted_article,
 )
 from chip_logistics.core.articles import articles
-from chip_logistics.core.articles.repo import ArticlesRepository
+from chip_logistics.core.articles.repo import ArticlesRepo
 
 router = Router(name='articles/article')
 
@@ -28,7 +28,7 @@ async def open_article(
     callback_query: CallbackQuery,
     callback_data: OpenArticleCallback,
     message: Message,
-    articles_repo: ArticlesRepository,
+    articles_repo: ArticlesRepo,
 ) -> HandlerResult:
     """Open article menu.
 
@@ -69,7 +69,7 @@ async def delete_article(
     callback_query: CallbackQuery,
     callback_data: DeleteArticleCallback,
     message: Message,
-    articles_repo: ArticlesRepository,
+    articles_repo: ArticlesRepo,
 ) -> HandlerResult:
     """Delete article.
 

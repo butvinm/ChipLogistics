@@ -6,7 +6,7 @@ from typing import Any, Optional, Protocol
 from chip_logistics.core.articles.models import ArticleInfo
 
 
-class ArticlesRepository(Protocol):
+class ArticlesRepo(Protocol):
     """Interface of articles repository.
 
     Articles repository provide CRUD over articles info in database.
@@ -74,7 +74,7 @@ class ArticlesRepository(Protocol):
     async def close(self) -> None:
         """Close repository and clean resources."""
 
-    async def __aenter__(self) -> 'ArticlesRepository':
+    async def __aenter__(self) -> 'ArticlesRepo':
         """Enter context manager and return repo instance.
 
         Args:

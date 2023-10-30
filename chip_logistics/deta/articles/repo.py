@@ -1,4 +1,4 @@
-"""ArticlesRepository based on Deta Base."""
+"""ArticlesRepo based on Deta Base."""
 
 
 from secrets import choice
@@ -8,12 +8,12 @@ from typing import Optional
 from deta import Deta
 
 from chip_logistics.core.articles.models import ArticleInfo
-from chip_logistics.core.articles.repo import ArticlesRepository
+from chip_logistics.core.articles.repo import ArticlesRepo
 from chip_logistics.deta.models import model_dump
 
 
-class DetaArticlesRepository(ArticlesRepository):
-    """ArticlesRepository based on Deta Base.
+class DetaArticlesRepo(ArticlesRepo):
+    """ArticlesRepobased on Deta Base.
 
     Articles are stored in the `articles` base.
     """

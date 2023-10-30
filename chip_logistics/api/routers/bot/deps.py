@@ -10,8 +10,8 @@ from fastapi import Depends
 from chip_logistics.bot.factory import init_bot, init_dispatcher
 from chip_logistics.config import get_bot_token, get_fixer_api_key
 from chip_logistics.core.articles.currencies import CurrenciesService
-from chip_logistics.core.articles.repo import ArticlesRepository
-from chip_logistics.deta.articles.repo import DetaArticlesRepository
+from chip_logistics.core.articles.repo import ArticlesRepo
+from chip_logistics.deta.articles.repo import DetaArticlesRepo
 from chip_logistics.deta.deta import get_deta
 
 
@@ -61,7 +61,7 @@ async def get_dispatcher(
 
 async def get_articles_repo(
     deta: Annotated[Deta, Depends(get_deta)],
-) -> AsyncGenerator[ArticlesRepository, None]:
+) -> AsyncGenerator[ArticlesRepo, None]:
     """Get articles repository instance.
 
     Args:
@@ -70,7 +70,7 @@ async def get_articles_repo(
     Yields:
         Articles repository.
     """
-    async with DetaArticlesRepository(deta) as repo:
+    async with DetaArticlesRepo(deta) as repo:
         yield repo
 
 

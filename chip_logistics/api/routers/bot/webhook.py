@@ -19,7 +19,7 @@ from chip_logistics.bot.handler_result import HandlerResult
 from chip_logistics.config import get_bot_secret
 from chip_logistics.core.amocrm.client import AmoCRMClient
 from chip_logistics.core.articles.currencies import CurrenciesService
-from chip_logistics.core.articles.repo import ArticlesRepository
+from chip_logistics.core.articles.repo import ArticlesRepo
 
 router = APIRouter(prefix='/webhook')
 
@@ -27,7 +27,7 @@ router = APIRouter(prefix='/webhook')
 SecretHeader = Header(alias='X-Telegram-Bot-Api-Secret-Token')
 
 
-ArticlesRepoDep = Annotated[ArticlesRepository, Depends(get_articles_repo)]
+ArticlesRepoDep = Annotated[ArticlesRepo, Depends(get_articles_repo)]
 CurrenciesServiceDep = Annotated[
     CurrenciesService,
     Depends(get_currencies_service),

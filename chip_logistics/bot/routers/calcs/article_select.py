@@ -25,7 +25,7 @@ from chip_logistics.bot.views.calcs.article_select import (
 )
 from chip_logistics.core.articles.articles import find_articles, get_article
 from chip_logistics.core.articles.models import ArticleInfo
-from chip_logistics.core.articles.repo import ArticlesRepository
+from chip_logistics.core.articles.repo import ArticlesRepo
 from chip_logistics.utils.decimal import parse_decimal
 
 router = Router(name='calcs/article')
@@ -38,7 +38,7 @@ router = Router(name='calcs/article')
 async def open_article_select(
     callback_query: CallbackQuery,
     message: Message,
-    articles_repo: ArticlesRepository,
+    articles_repo: ArticlesRepo,
     state: FSMContext,
 ) -> HandlerResult:
     """Ask for article selection or manual input.
@@ -67,7 +67,7 @@ async def handle_article(
     callback_query: CallbackQuery,
     message: Message,
     callback_data: SelectArticleCallback,
-    articles_repo: ArticlesRepository,
+    articles_repo: ArticlesRepo,
     state: FSMContext,
 ) -> HandlerResult:
     """Save selected article data to state.

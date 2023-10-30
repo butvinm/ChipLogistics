@@ -20,11 +20,11 @@ from chip_logistics.core.articles.models import (
     ArticleItem,
     Currency,
 )
-from chip_logistics.core.articles.repo import ArticlesRepository
+from chip_logistics.core.articles.repo import ArticlesRepo
 
 
 async def get_article(
-    repo: ArticlesRepository,
+    repo: ArticlesRepo,
     article_id: str,
 ) -> Optional[ArticleInfo]:
     """Get article by id.
@@ -40,7 +40,7 @@ async def get_article(
 
 
 async def find_articles(
-    repo: ArticlesRepository,
+    repo: ArticlesRepo,
     query: Optional[str] = None,
 ) -> list[ArticleInfo]:
     """Find articles by name.
@@ -61,7 +61,7 @@ async def find_articles(
 
 
 async def create_article(
-    repo: ArticlesRepository,
+    repo: ArticlesRepo,
     name: str,
     duty_fee_ratio: Decimal,
 ) -> ArticleInfo:
@@ -84,7 +84,7 @@ async def create_article(
 
 
 async def delete_article(
-    repo: ArticlesRepository,
+    repo: ArticlesRepo,
     article_id: str,
 ) -> bool:
     """Delete article from repository.

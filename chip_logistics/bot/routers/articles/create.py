@@ -24,7 +24,7 @@ from chip_logistics.bot.views.articles.create import (
 )
 from chip_logistics.core.articles import articles
 from chip_logistics.core.articles.models import ArticleInfo
-from chip_logistics.core.articles.repo import ArticlesRepository
+from chip_logistics.core.articles.repo import ArticlesRepo
 from chip_logistics.utils.decimal import parse_decimal
 
 router = Router(name='articles/create')
@@ -123,7 +123,7 @@ async def create_article(
     callback_query: CallbackQuery,
     message: Message,
     state: FSMContext,
-    articles_repo: ArticlesRepository,
+    articles_repo: ArticlesRepo,
 ) -> HandlerResult:
     """Create new article.
 

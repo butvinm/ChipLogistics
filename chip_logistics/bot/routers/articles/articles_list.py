@@ -9,7 +9,7 @@ from chip_logistics.bot.filters.extract_message import ExtractMessage
 from chip_logistics.bot.handler_result import HandlerResult, Ok
 from chip_logistics.bot.views.articles.articles_list import send_articles_list
 from chip_logistics.core.articles.articles import find_articles
-from chip_logistics.core.articles.repo import ArticlesRepository
+from chip_logistics.core.articles.repo import ArticlesRepo
 
 router = Router(name='articles/list')
 
@@ -21,7 +21,7 @@ router = Router(name='articles/list')
 async def open_articles_list(
     callback_query: CallbackQuery,
     message: Message,
-    articles_repo: ArticlesRepository,
+    articles_repo: ArticlesRepo,
 ) -> HandlerResult:
     """Open articles list.
 

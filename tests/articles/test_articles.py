@@ -14,7 +14,7 @@ from chip_logistics.core.articles.articles import (
     find_articles,
 )
 from chip_logistics.core.articles.models import ArticleInfo
-from chip_logistics.core.articles.repo import ArticlesRepository
+from chip_logistics.core.articles.repo import ArticlesRepo
 from tests.articles.conftest import (
     ARTICLE_NAME_PREFIX,
     gen_article_name,
@@ -22,7 +22,7 @@ from tests.articles.conftest import (
 )
 
 
-class ArticlesRepositoryStub(ArticlesRepository):
+class ArticlesRepoStub(ArticlesRepo):
     """Stub of articles repository.
 
     Articles stored in the dictionary.
@@ -123,7 +123,7 @@ class ArticlesRepositoryStub(ArticlesRepository):
 
 
 @pytest.fixture
-async def repo() -> AsyncGenerator[ArticlesRepository, None]:
+async def repo() -> AsyncGenerator[ArticlesRepo, None]:
     """Get article repo stub instance.
 
     Repository is prefilled with test_articles.
@@ -131,7 +131,7 @@ async def repo() -> AsyncGenerator[ArticlesRepository, None]:
     Yields:
         Articles repository stub.
     """
-    async with ArticlesRepositoryStub() as repo:
+    async with ArticlesRepoStub() as repo:
         for article, _ in test_articles:
             await repo.put_article(
                 ArticleInfo(id=None, **article.model_dump()),
@@ -143,7 +143,7 @@ TEST_NAME = gen_article_name()
 TEST_FEE = Decimal('1.5')
 
 
-async def test_create_article(repo: ArticlesRepository) -> None:
+async def test_create_article(repo: ArticlesRepo) -> None:
     """
     Test the create_article method of ArticlesService.
 
@@ -158,7 +158,7 @@ async def test_create_article(repo: ArticlesRepository) -> None:
     assert article.duty_fee_ratio == TEST_FEE
 
 
-async def test_find_articles(repo: ArticlesRepository) -> None:
+async def test_find_articles(repo: ArticlesRepo) -> None:
     """
     Test the find_articles method of ArticlesService.
 
@@ -178,7 +178,7 @@ async def test_find_articles(repo: ArticlesRepository) -> None:
     assert len(articles) == 0
 
 
-async def test_delete_article(repo: ArticlesRepository) -> None:
+async def test_delete_article(repo: ArticlesRepo) -> None:
     """
     Test the delete_article method of ArticlesService.
 
