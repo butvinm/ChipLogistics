@@ -12,7 +12,7 @@ from aiohttp import ClientSession
 from pydantic import BaseModel, ConfigDict
 
 from chip_logistics.core.amocrm.models import Credentials
-from chip_logistics.core.amocrm.repo import AmoCRMRepository
+from chip_logistics.core.amocrm.repo import AmoCRMRepo
 
 
 class AmoCRMClient(BaseModel):
@@ -27,7 +27,7 @@ class AmoCRMClient(BaseModel):
     credentials: Credentials
 
     # Repository where client info stored.
-    repo: AmoCRMRepository
+    repo: AmoCRMRepo
 
     # Session with AmoCRM API related to current account.
     api_session: ClientSession
@@ -38,7 +38,7 @@ class AmoCRMClient(BaseModel):
 
 @asynccontextmanager
 async def init_client(
-    repo: AmoCRMRepository,
+    repo: AmoCRMRepo,
 ) -> AsyncGenerator[AmoCRMClient, None]:
     """Initialize AmoCRM client with credentials.
 

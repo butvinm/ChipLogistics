@@ -1,12 +1,14 @@
 """Articles repository."""
 
 
-from typing import Any, Optional, Protocol
+from typing import Optional, Protocol, runtime_checkable
 
 from chip_logistics.core.articles.models import ArticleInfo
+from chip_logistics.utils.closing import AClosing
 
 
-class ArticlesRepo(Protocol):
+@runtime_checkable
+class ArticlesRepo(AClosing, Protocol):
     """Interface of articles repository.
 
     Articles repository provide CRUD over articles info in database.
@@ -70,25 +72,3 @@ class ArticlesRepo(Protocol):
         Returns:
             True if article deleted.
         """
-
-    async def close(self) -> None:
-        """Close repository and clean resources."""
-
-    async def __aenter__(self) -> 'ArticlesRepo':
-        """Enter context manager and return repo instance.
-
-        Args:
-            Initialized instance.
-
-        Returns:
-            Initialized instance.
-        """
-        return self
-
-    async def __aexit__(self, *args: Any) -> None:
-        """Clean resources.
-
-        Args:
-            args: Exceptions info, if exception was caused.
-        """
-        await self.close()

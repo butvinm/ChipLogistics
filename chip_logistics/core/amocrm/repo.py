@@ -1,13 +1,14 @@
 """AmoCRM client data repository interface."""
 
 
-from typing import Any, Protocol, runtime_checkable
+from typing import Protocol, runtime_checkable
 
 from chip_logistics.core.amocrm.models import Credentials
+from chip_logistics.utils.closing import AClosing
 
 
 @runtime_checkable
-class AmoCRMRepository(Protocol):
+class AmoCRMRepo(AClosing, Protocol):
     """AmoCRM client data repository interface."""
 
     async def get_credentials(self) -> Credentials:
@@ -23,25 +24,3 @@ class AmoCRMRepository(Protocol):
         Args:
             credentials: AmoCRM integration credentials.
         """
-
-    async def close(self) -> None:
-        """Close repository and clean resources."""
-
-    async def __aenter__(self) -> 'AmoCRMRepository':
-        """Enter context manager and return repo instance.
-
-        Args:
-            Initialized instance.
-
-        Returns:
-            Initialized instance.
-        """
-        return self
-
-    async def __aexit__(self, *args: Any) -> None:
-        """Clean resources.
-
-        Args:
-            args: Exceptions info, if exception was caused.
-        """
-        await self.close()

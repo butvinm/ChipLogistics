@@ -1,4 +1,4 @@
-"""AmoCRMRepository implementation based on Deta Base."""
+"""AmoCRMRepo implementation based on Deta Base."""
 
 
 from typing import Any
@@ -6,11 +6,11 @@ from typing import Any
 from deta import Deta
 
 from chip_logistics.core.amocrm.models import Credentials
-from chip_logistics.core.amocrm.repo import AmoCRMRepository
+from chip_logistics.core.amocrm.repo import AmoCRMRepo
 
 
-class DetaAmoCRMRepository(AmoCRMRepository):
-    """AmoCRMRepository implementation based on Deta Base."""
+class DetaAmoCRMRepo(AmoCRMRepo):
+    """AmoCRMRepo implementation based on Deta Base."""
 
     def __init__(self, deta: Deta) -> None:
         """Initialize repo and connect deta base.
@@ -48,6 +48,6 @@ class DetaAmoCRMRepository(AmoCRMRepository):
             key=credentials.client_id,
         )
 
-    async def close(self) -> None:
+    async def aclose(self) -> None:
         """Close Deta Base connection."""
         await self._base.close()

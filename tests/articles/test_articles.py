@@ -15,6 +15,7 @@ from chip_logistics.core.articles.articles import (
 )
 from chip_logistics.core.articles.models import ArticleInfo
 from chip_logistics.core.articles.repo import ArticlesRepo
+from chip_logistics.utils.closing import AClosing
 from tests.articles.conftest import (
     ARTICLE_NAME_PREFIX,
     gen_article_name,
@@ -22,7 +23,7 @@ from tests.articles.conftest import (
 )
 
 
-class ArticlesRepoStub(ArticlesRepo):
+class ArticlesRepoStub(ArticlesRepo, AClosing):
     """Stub of articles repository.
 
     Articles stored in the dictionary.
@@ -108,7 +109,7 @@ class ArticlesRepoStub(ArticlesRepo):
             if query.lower() in article.name.lower()
         ]
 
-    async def close(self) -> None:
+    async def aclose(self) -> None:
         """Close repository and clean resources."""
         self._articles = {}
 

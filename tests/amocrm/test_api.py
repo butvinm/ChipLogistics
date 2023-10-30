@@ -13,10 +13,10 @@ from chip_logistics.core.amocrm.api import (
 )
 from chip_logistics.core.amocrm.client import AmoCRMClient, init_client
 from chip_logistics.core.amocrm.models import Credentials
-from chip_logistics.core.amocrm.repo import AmoCRMRepository
+from chip_logistics.core.amocrm.repo import AmoCRMRepo
 
 
-class MockAmoCRMRepository(AmoCRMRepository):
+class MockAmoCRMRepo(AmoCRMRepo):
     """Mock of the repository."""
 
     def __init__(self, credentials: Credentials) -> None:
@@ -43,7 +43,7 @@ class MockAmoCRMRepository(AmoCRMRepository):
         """
         self._credentials = credentials
 
-    async def close(self) -> None:
+    async def aclose(self) -> None:
         """Delete credentials."""
         self._credentials = None  # type: ignore
 
@@ -51,7 +51,7 @@ class MockAmoCRMRepository(AmoCRMRepository):
 @pytest.fixture(scope='module')
 async def amo_repo(
     credentials: Credentials,
-) -> AsyncGenerator[AmoCRMRepository, None]:
+) -> AsyncGenerator[AmoCRMRepo, None]:
     """Return a mock repository.
 
     Args:
@@ -60,13 +60,13 @@ async def amo_repo(
     Yields:
         Mock repository.
     """
-    async with MockAmoCRMRepository(credentials) as repo:
+    async with MockAmoCRMRepo(credentials) as repo:
         yield repo
 
 
 @pytest.fixture(scope='module')
 async def amo_client(
-    amo_repo: AmoCRMRepository,
+    amo_repo: AmoCRMRepo,
 ) -> AsyncGenerator[AmoCRMClient, None]:
     """Return a clinet with a mock repository.
 
