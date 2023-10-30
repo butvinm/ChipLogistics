@@ -14,7 +14,8 @@ from chip_logistics.bot.views.articles.article import (
     send_article_menu,
     send_deleted_article,
 )
-from chip_logistics.core.articles.service import ArticlesService
+from chip_logistics.core.articles import articles
+from chip_logistics.core.articles.repo import ArticlesRepository
 
 router = Router(name='articles/article')
 
@@ -27,7 +28,7 @@ async def open_article(
     callback_query: CallbackQuery,
     callback_data: OpenArticleCallback,
     message: Message,
-    articles_service: ArticlesService,
+    articles_repo: ArticlesRepository,
 ) -> HandlerResult:
     """Open article menu.
 
@@ -35,13 +36,16 @@ async def open_article(
         callback_query: Open menu query.
         callback_data: Callback with article id.
         message: Message where query from.
-        articles_service: Articles service.
+        articles_repo: Articles storage.
 
     Returns:
         Ok - Article menu opened successfully.
         Err - Article not found.
     """
-    article = await articles_service.get_article(callback_data.article_id)
+    article = await articles.get_article(
+        articles_repo,
+        callback_data.article_id,
+    )
     if article is None:
         return Err(
             message='Article {article_id} not found'.format(
@@ -65,7 +69,7 @@ async def delete_article(
     callback_query: CallbackQuery,
     callback_data: DeleteArticleCallback,
     message: Message,
-    articles_service: ArticlesService,
+    articles_repo: ArticlesRepository,
 ) -> HandlerResult:
     """Delete article.
 
@@ -73,13 +77,14 @@ async def delete_article(
         callback_query: Open menu query.
         callback_data: Callback with article id.
         message: Message where query from.
-        articles_service: Articles service.
+        articles_repo: Articles storage.
 
     Returns:
         Ok - Deleted successfully.
         Err - Article not found.
     """
-    deleted = await articles_service.delete_article(
+    deleted = await articles.delete_article(
+        articles_repo,
         article_id=callback_data.article_id,
     )
     if not deleted:

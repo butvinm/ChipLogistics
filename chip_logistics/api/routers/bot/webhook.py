@@ -9,15 +9,17 @@ from fastapi import APIRouter, Depends, Header, HTTPException, status
 from pydantic import SecretStr
 
 from chip_logistics.api.routers.bot.deps import (
-    get_articles_service,
+    get_articles_repo,
     get_bot,
+    get_currencies_service,
     get_dispatcher,
 )
 from chip_logistics.api.routers.deps import get_amocrm_client
 from chip_logistics.bot.handler_result import HandlerResult
 from chip_logistics.config import get_bot_secret
 from chip_logistics.core.amocrm.client import AmoCRMClient
-from chip_logistics.core.articles.service import ArticlesService
+from chip_logistics.core.articles.currencies import CurrenciesService
+from chip_logistics.core.articles.repo import ArticlesRepository
 
 router = APIRouter(prefix='/webhook')
 
@@ -25,7 +27,11 @@ router = APIRouter(prefix='/webhook')
 SecretHeader = Header(alias='X-Telegram-Bot-Api-Secret-Token')
 
 
-ArticlesServiceDep = Annotated[ArticlesService, Depends(get_articles_service)]
+ArticlesRepoDep = Annotated[ArticlesRepository, Depends(get_articles_repo)]
+CurrenciesServiceDep = Annotated[
+    CurrenciesService,
+    Depends(get_currencies_service),
+]
 AmoCRMServiceDep = Annotated[AmoCRMClient, Depends(get_amocrm_client)]
 
 
@@ -36,7 +42,8 @@ async def handle_update(  # noqa: WPS211
     bot: Annotated[Bot, Depends(get_bot)],
     dispatcher: Annotated[Dispatcher, Depends(get_dispatcher)],
     expected_secret: Annotated[str, Depends(get_bot_secret)],
-    articles_service: ArticlesServiceDep,
+    articles_repo: ArticlesRepoDep,
+    currencies_service: CurrenciesServiceDep,
     amocrm_client: AmoCRMServiceDep,
 ) -> HandlerResult:
     """Handle telegram update and propagate to aiogram dispatcher.
@@ -51,7 +58,8 @@ async def handle_update(  # noqa: WPS211
         dispatcher: Aiogram dispatcher instance.
         expected_secret: Secret for request verification. See `config.py`.
         secret: Request secret.
-        articles_service: Articles service.
+        articles_repo: Articles storage.
+        currencies_service: Currencies operations provider.
         amocrm_client: AmoCRM client.
 
     Raises:
@@ -69,6 +77,7 @@ async def handle_update(  # noqa: WPS211
     return await dispatcher.feed_update(  # type: ignore
         bot,
         update=update,
-        articles_service=articles_service,
+        articles_repo=articles_repo,
+        currencies_service=currencies_service,
         amocrm_client=amocrm_client,
     )

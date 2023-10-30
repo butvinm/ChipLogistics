@@ -14,8 +14,10 @@ from chip_logistics.bot.states.calcs import CalculationsState
 from chip_logistics.bot.views.calcs.finish import send_calcs_report
 from chip_logistics.core.amocrm.api import attach_file_to_contact, upload_file
 from chip_logistics.core.amocrm.client import AmoCRMClient
+from chip_logistics.core.articles.articles import calculate_articles_price
+from chip_logistics.core.articles.currencies import CurrenciesService
 from chip_logistics.core.articles.models import ArticleItem
-from chip_logistics.core.articles.service import ArticlesService
+from chip_logistics.core.articles.report import create_calculations_report
 
 router = Router(name='calcs/finish')
 
@@ -30,7 +32,7 @@ async def finish_calcs(
     message: Message,
     state: FSMContext,
     amocrm_client: AmoCRMClient,
-    articles_service: ArticlesService,
+    currencies_service: CurrenciesService,
 ) -> HandlerResult:
     """Send contact select menu.
 
@@ -39,7 +41,7 @@ async def finish_calcs(
         message: Message where query from.
         state: Current FSM state.
         amocrm_client: AmoCRM client data to access API.
-        articles_service: Articles service.
+        currencies_service: Currencies operations provider.
 
     Returns:
         Ok - report file successfully created.
@@ -47,9 +49,9 @@ async def finish_calcs(
     """
     context = await state.get_data()
     report_data, report_name = await get_report(
+        currencies_service,
         context.get('items', []),
         context.get('customer_name', ''),
-        articles_service,
     )
 
     contact_id = context.get('contact_id')
@@ -71,16 +73,16 @@ async def finish_calcs(
 
 
 async def get_report(
+    currencies_service: CurrenciesService,
     articles_data: list[dict[str, Any]],
     customer_name: str,
-    articles_service: ArticlesService,
 ) -> tuple[bytes, str]:
     """Calculate price and form report.
 
     Args:
+        currencies_service: Currencies operations provider.
         articles_data: Entered articles data from FSM context.
         customer_name: Entered customer_name from FSM context.
-        articles_service: Articles service.
 
     Returns:
         Calculations report.
@@ -89,10 +91,11 @@ async def get_report(
         ArticleItem(**item_data)
         for item_data in articles_data
     ]
-    calculations_results, total_price = await articles_service.calculate_articles_price(  # noqa: E501
+    calculations_results, total_price = await calculate_articles_price(
+        currencies_service,
         articles_items,
     )
-    return articles_service.create_calculations_report(
+    return create_calculations_report(
         calculations_results,
         total_price,
         customer_name,

@@ -22,8 +22,9 @@ from chip_logistics.bot.views.articles.create import (
     send_duty_fee_ratio_request,
     send_name_request,
 )
+from chip_logistics.core.articles import articles
 from chip_logistics.core.articles.models import ArticleInfo
-from chip_logistics.core.articles.service import ArticlesService
+from chip_logistics.core.articles.repo import ArticlesRepository
 from chip_logistics.utils.decimal import parse_decimal
 
 router = Router(name='articles/create')
@@ -122,7 +123,7 @@ async def create_article(
     callback_query: CallbackQuery,
     message: Message,
     state: FSMContext,
-    articles_service: ArticlesService,
+    articles_repo: ArticlesRepository,
 ) -> HandlerResult:
     """Create new article.
 
@@ -130,7 +131,7 @@ async def create_article(
         callback_query: Open menu query.
         message: Message where query from.
         state: Current FSM state.
-        articles_service: Articles service.
+        articles_repo: Articles storage.
 
     Returns:
         Ok - article created successfully.
@@ -138,7 +139,8 @@ async def create_article(
     """
     context = await state.get_data()
     article = ArticleInfo(id=None, **context)
-    article = await articles_service.create_article(
+    article = await articles.create_article(
+        articles_repo,
         article.name,
         article.duty_fee_ratio,
     )

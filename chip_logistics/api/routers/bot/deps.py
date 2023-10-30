@@ -11,7 +11,6 @@ from chip_logistics.bot.factory import init_bot, init_dispatcher
 from chip_logistics.config import get_bot_token, get_fixer_api_key
 from chip_logistics.core.articles.currencies import CurrenciesService
 from chip_logistics.core.articles.repo import ArticlesRepository
-from chip_logistics.core.articles.service import ArticlesService
 from chip_logistics.deta.articles.repo import DetaArticlesRepository
 from chip_logistics.deta.deta import get_deta
 
@@ -94,19 +93,3 @@ CurrenciesServiceDep = Annotated[
     CurrenciesService,
     Depends(get_currencies_service),
 ]
-
-
-async def get_articles_service(
-    repo: Annotated[ArticlesRepository, Depends(get_articles_repo)],
-    currencies_service: CurrenciesServiceDep,
-) -> ArticlesService:
-    """Get articles service instance.
-
-    Args:
-        repo: Articles repository.
-        currencies_service: Currencies service.
-
-    Returns:
-        Articles service.
-    """
-    return ArticlesService(repo, currencies_service)

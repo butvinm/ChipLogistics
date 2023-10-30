@@ -23,8 +23,9 @@ from chip_logistics.bot.views.calcs.article_select import (
     send_duty_fee_ratio_request,
     send_name_request,
 )
+from chip_logistics.core.articles.articles import find_articles, get_article
 from chip_logistics.core.articles.models import ArticleInfo
-from chip_logistics.core.articles.service import ArticlesService
+from chip_logistics.core.articles.repo import ArticlesRepository
 from chip_logistics.utils.decimal import parse_decimal
 
 router = Router(name='calcs/article')
@@ -37,7 +38,7 @@ router = Router(name='calcs/article')
 async def open_article_select(
     callback_query: CallbackQuery,
     message: Message,
-    articles_service: ArticlesService,
+    articles_repo: ArticlesRepository,
     state: FSMContext,
 ) -> HandlerResult:
     """Ask for article selection or manual input.
@@ -45,14 +46,14 @@ async def open_article_select(
     Args:
         callback_query: Open menu query.
         message: Message where query from.
-        articles_service: Articles service.
+        articles_repo: Articles storage.
         state: Current FSM state.
 
     Returns:
         Always success.
     """
     await state.set_state(CalculationsState.wait_article)
-    articles = await articles_service.find_articles()
+    articles = await find_articles(articles_repo)
     await send_article_request(message, articles)
     return Ok()
 
@@ -66,7 +67,7 @@ async def handle_article(
     callback_query: CallbackQuery,
     message: Message,
     callback_data: SelectArticleCallback,
-    articles_service: ArticlesService,
+    articles_repo: ArticlesRepository,
     state: FSMContext,
 ) -> HandlerResult:
     """Save selected article data to state.
@@ -75,14 +76,14 @@ async def handle_article(
         callback_query: Open menu query.
         message: Message where query from.
         callback_data: Callback data with article id.
-        articles_service: Articles service.
+        articles_repo: Articles storage.
         state: Current FSM state.
 
     Returns:
         Ok - article data successfully taken.
         Err - article not found.
     """
-    article = await articles_service.get_article(callback_data.article_id)
+    article = await get_article(articles_repo, callback_data.article_id)
     if article is None:
         return Err(
             message='Article {article_id} not found'.format(
