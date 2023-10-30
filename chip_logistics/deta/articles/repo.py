@@ -62,6 +62,32 @@ class DetaArticlesRepository(ArticlesRepository):
             for article_data in articles_result.items
         ]
 
+    async def find_articles(
+        self,
+        query: Optional[str] = None,
+    ) -> list[ArticleInfo]:
+        """Find articles by name.
+
+        Search is case and word position insensitive.
+
+        So, for names ['fOo', 'Bar', 'bar foo'] query
+        'foo' would find ['fOo', 'bar foo'].
+
+        Args:
+            query: Name query. If None, all articles returned.
+
+        Returns:
+            List of found articles.
+        """
+        articles = await self.get_articles()
+        if query is None:
+            return articles
+
+        return [
+            article for article in articles
+            if query.lower() in article.name.lower()
+        ]
+
     async def get_article(self, article_id: str) -> Optional[ArticleInfo]:
         """Get article from base by id.
 

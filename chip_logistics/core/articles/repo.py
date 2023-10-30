@@ -33,6 +33,24 @@ class ArticlesRepository(Protocol):
             Articles info.
         """
 
+    async def find_articles(
+        self,
+        query: Optional[str] = None,
+    ) -> list[ArticleInfo]:
+        """Find articles by name.
+
+        Search is case and word position insensitive.
+
+        So, for names ['fOo', 'Bar', 'bar foo'] query
+        'foo' would find ['fOo', 'bar foo'].
+
+        Args:
+            query: Name query. If None, all articles returned.
+
+        Returns:
+            List of found articles.
+        """
+
     async def get_article(self, article_id: str) -> Optional[ArticleInfo]:
         """Get article from repository by id.
 
