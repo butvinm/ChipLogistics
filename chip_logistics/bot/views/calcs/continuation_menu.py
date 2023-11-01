@@ -13,6 +13,7 @@ from chip_logistics.bot.texts.calcs import (
     ITEM_DATA,
     STOP_BTN,
 )
+from chip_logistics.bot.views.back import back_btn
 from chip_logistics.core.articles.models import ArticleItem
 
 
@@ -41,6 +42,9 @@ continuation_menu_kb = InlineKeyboardMarkup(
                 text=ADD_ITEM_BTN,
                 callback_data=AddItemCallback().pack(),
             ),
+        ],
+        [
+            back_btn,
         ],
         [
             InlineKeyboardButton(
