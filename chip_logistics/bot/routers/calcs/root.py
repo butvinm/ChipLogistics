@@ -5,6 +5,7 @@ from aiogram import Router
 
 from chip_logistics.bot.routers.calcs import (
     contact_select,
+    continuation_menu,
     customer,
     finish,
     start,
@@ -18,4 +19,5 @@ router.include_routers(
     add_item.router,
     customer.router,
     start.router,
+    continuation_menu.router,
 )

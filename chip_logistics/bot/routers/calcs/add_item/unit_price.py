@@ -7,6 +7,7 @@ from aiogram import Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
+from chip_logistics.bot.callbacks.back import BackCallback
 from chip_logistics.bot.callbacks.calcs import ItemPriceCurrencyCallback
 from chip_logistics.bot.filters.extract_message import ExtractMessage
 from chip_logistics.bot.filters.text_message import TextMessage
@@ -14,7 +15,9 @@ from chip_logistics.bot.handler_result import Err, HandlerResult, Ok
 from chip_logistics.bot.states.calcs import CalculationsState
 from chip_logistics.bot.views.calcs.add_item import (
     send_bad_item_unit_price,
+    send_item_price_currency_request,
     send_item_unit_price_request,
+    send_item_unit_weight_request,
 )
 from chip_logistics.bot.views.calcs.continuation_menu import (
     send_continuation_menu,
@@ -54,6 +57,31 @@ async def handle_item_price_currency(
     await state.update_data(price_currency=currency)
     await state.set_state(CalculationsState.wait_item_unit_price)
     return Ok(extra={'price_currency': currency})
+
+
+@router.callback_query(
+    CalculationsState.wait_item_price_currency,
+    BackCallback.filter(),
+    ExtractMessage,
+)
+async def back_to_item_unit_weight_request(
+    callback_query: CallbackQuery,
+    message: Message,
+    state: FSMContext,
+) -> HandlerResult:
+    """Go back to the item unit weight request.
+
+    Args:
+        callback_query: Handled query.
+        message: Message query from.
+        state: Current FCM state.
+
+    Returns:
+        Always success.
+    """
+    await send_item_unit_weight_request(message)
+    await state.set_state(CalculationsState.wait_item_unit_weight)
+    return Ok()
 
 
 @router.message(
@@ -105,3 +133,28 @@ async def handle_item_unit_price(
     await state.set_data(context)
     await state.set_state(CalculationsState.wait_continuation)
     return Ok(extra={'item': article_item})
+
+
+@router.callback_query(
+    CalculationsState.wait_item_unit_price,
+    BackCallback.filter(),
+    ExtractMessage,
+)
+async def back_to_item_price_currency(
+    callback_query: CallbackQuery,
+    message: Message,
+    state: FSMContext,
+) -> HandlerResult:
+    """Go back to the item price currency request.
+
+    Args:
+        callback_query: Handled query.
+        message: Message query from.
+        state: Current FCM state.
+
+    Returns:
+        Always success.
+    """
+    await send_item_price_currency_request(message)
+    await state.set_state(CalculationsState.wait_item_price_currency)
+    return Ok()

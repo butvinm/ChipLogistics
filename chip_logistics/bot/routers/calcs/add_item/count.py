@@ -3,13 +3,16 @@
 
 from aiogram import Router
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message
+from aiogram.types import CallbackQuery, Message
 
+from chip_logistics.bot.callbacks.back import BackCallback
+from chip_logistics.bot.filters.extract_message import ExtractMessage
 from chip_logistics.bot.filters.text_message import TextMessage
 from chip_logistics.bot.handler_result import Err, HandlerResult, Ok
 from chip_logistics.bot.states.calcs import CalculationsState
 from chip_logistics.bot.views.calcs.add_item import (
     send_bad_item_count,
+    send_item_name_request,
     send_item_unit_weight_request,
 )
 
@@ -55,3 +58,28 @@ async def handle_item_count(
     await state.update_data(count=count)
     await state.set_state(CalculationsState.wait_item_unit_weight)
     return Ok(extra={'count': count})
+
+
+@router.callback_query(
+    CalculationsState.wait_item_count,
+    BackCallback.filter(),
+    ExtractMessage,
+)
+async def back_to_item_name(
+    callback_query: CallbackQuery,
+    message: Message,
+    state: FSMContext,
+) -> HandlerResult:
+    """Go back to the item name request.
+
+    Args:
+        callback_query: Handled query.
+        message: Message query from.
+        state: Current FCM state.
+
+    Returns:
+        Always success.
+    """
+    await send_item_name_request(message)
+    await state.set_state(CalculationsState.wait_item_name)
+    return Ok()
