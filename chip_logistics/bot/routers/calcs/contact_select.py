@@ -5,6 +5,7 @@ from aiogram import Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
+from chip_logistics.bot.callbacks.back import BackCallback
 from chip_logistics.bot.callbacks.calcs import (
     OpenContactSelectCallback,
     SearchContactCallback,
@@ -20,8 +21,12 @@ from chip_logistics.bot.views.calcs.contact_select import (
     send_search_query_request,
     send_search_result,
 )
+from chip_logistics.bot.views.calcs.continuation_menu import (
+    send_continuation_menu,
+)
 from chip_logistics.core.amocrm.api import find_contacts
 from chip_logistics.core.amocrm.client import AmoCRMClient
+from chip_logistics.core.articles.models import ArticleItem
 
 router = Router(name='calcs/contacts')
 
@@ -128,4 +133,39 @@ async def select_contact(
     """
     await send_contact_selected(message)
     await state.update_data(contact_id=callback_data.contact_id)
+    return Ok()
+
+
+@router.callback_query(
+    CalculationsState.wait_contact_select,
+    BackCallback.filter(),
+    ExtractMessage,
+)
+@router.callback_query(
+    CalculationsState.wait_contact_search,
+    BackCallback.filter(),
+    ExtractMessage,
+)
+async def back_to_continuation_menu(
+    callback_query: CallbackQuery,
+    message: Message,
+    state: FSMContext,
+) -> HandlerResult:
+    """Go back to the continuation menu.
+
+    Args:
+        callback_query: Handled query.
+        message: Message query from.
+        state: Current FCM state.
+
+    Returns:
+        Always success.
+    """
+    context = await state.get_data()
+    articles_items = [
+        ArticleItem(**article)
+        for article in context.get('items', [])
+    ]
+    await send_continuation_menu(message, articles_items)
+    await state.set_state(CalculationsState.wait_continuation)
     return Ok()

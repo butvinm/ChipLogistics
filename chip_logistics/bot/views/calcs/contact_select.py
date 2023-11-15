@@ -18,6 +18,7 @@ from chip_logistics.bot.texts.calcs import (
     SEARCH_RESULT,
     SKIP_CONTACT_BTN,
 )
+from chip_logistics.bot.views.back import back_btn, back_kb
 from chip_logistics.core.amocrm.models import Contact
 
 select_menu_kb = InlineKeyboardMarkup(
@@ -33,6 +34,9 @@ select_menu_kb = InlineKeyboardMarkup(
                 text=SKIP_CONTACT_BTN,
                 callback_data=FinishCalcsCallback().pack(),
             ),
+        ],
+        [
+            back_btn,
         ],
     ],
 )
@@ -60,7 +64,7 @@ async def send_search_query_request(
     Args:
         message: Message. Can be used to answer, modify or get user info.
     """
-    await message.answer(text=ASK_SEARCH_QUERY)
+    await message.answer(text=ASK_SEARCH_QUERY, reply_markup=back_kb)
 
 
 def build_search_result_kb(contacts: list[Contact]) -> InlineKeyboardMarkup:
@@ -93,6 +97,7 @@ def build_search_result_kb(contacts: list[Contact]) -> InlineKeyboardMarkup:
         text=SKIP_CONTACT_BTN,
         callback_data=FinishCalcsCallback().pack(),
     )
+    builder.add(back_btn)
 
     builder.adjust(*rows_sizes)
     return builder.as_markup()

@@ -13,6 +13,7 @@ from chip_logistics.bot.texts.calcs import (
     BAD_ITEM_UNIT_PRICE,
     BAD_ITEM_UNIT_WEIGHT,
 )
+from chip_logistics.bot.views.back import back_btns, back_kb
 from chip_logistics.core.articles.models import Currency
 
 
@@ -24,7 +25,7 @@ async def send_item_name_request(
     Args:
         message: Message. Can be used to answer, modify or get user info.
     """
-    await message.answer(text=ASK_ITEM_NAME)
+    await message.answer(text=ASK_ITEM_NAME, reply_markup=back_kb)
 
 
 async def send_item_count_request(
@@ -35,7 +36,7 @@ async def send_item_count_request(
     Args:
         message: Message. Can be used to answer, modify or get user info.
     """
-    await message.answer(text=ASK_ITEM_COUNT)
+    await message.answer(text=ASK_ITEM_COUNT, reply_markup=back_kb)
 
 
 async def send_bad_item_count(
@@ -46,7 +47,7 @@ async def send_bad_item_count(
     Args:
         message: Message. Can be used to answer, modify or get user info.
     """
-    await message.answer(text=BAD_ITEM_COUNT)
+    await message.answer(text=BAD_ITEM_COUNT, reply_markup=back_kb)
 
 
 async def send_item_unit_weight_request(
@@ -57,7 +58,7 @@ async def send_item_unit_weight_request(
     Args:
         message: Message. Can be used to answer, modify or get user info.
     """
-    await message.answer(text=ASK_ITEM_UNIT_WEIGHT)
+    await message.answer(text=ASK_ITEM_UNIT_WEIGHT, reply_markup=back_kb)
 
 
 async def send_bad_item_unit_weight(
@@ -68,7 +69,7 @@ async def send_bad_item_unit_weight(
     Args:
         message: Message. Can be used to answer, modify or get user info.
     """
-    await message.answer(text=BAD_ITEM_UNIT_WEIGHT)
+    await message.answer(text=BAD_ITEM_UNIT_WEIGHT, reply_markup=back_kb)
 
 
 currencies_kb = InlineKeyboardMarkup(
@@ -82,7 +83,7 @@ currencies_kb = InlineKeyboardMarkup(
             ),
         ]
         for currency in Currency
-    ],
+    ] + back_btns,
 )
 
 
@@ -110,7 +111,10 @@ async def send_item_unit_price_request(
         message: Message. Can be used to answer, modify or get user info.
         currency: Currency to show in the message.
     """
-    await message.answer(text=ASK_ITEM_UNIT_PRICE.format(currency=currency))
+    await message.answer(
+        text=ASK_ITEM_UNIT_PRICE.format(currency=currency),
+        reply_markup=back_kb,
+    )
 
 
 async def send_bad_item_unit_price(
@@ -121,4 +125,4 @@ async def send_bad_item_unit_price(
     Args:
         message: Message. Can be used to answer, modify or get user info.
     """
-    await message.answer(text=BAD_ITEM_UNIT_PRICE)
+    await message.answer(text=BAD_ITEM_UNIT_PRICE, reply_markup=back_kb)

@@ -1,4 +1,4 @@
-"""Articles prices calculation views."""
+"""Articles selection views."""
 
 from aiogram.types import InlineKeyboardMarkup, Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
