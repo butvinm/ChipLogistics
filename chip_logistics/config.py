@@ -41,3 +41,12 @@ def get_fixer_api_key() -> str:
         Fixer API key.
     """
     return environ['FIXER_API_KEY']
+
+
+def get_repo_template_name() -> str:
+    """Get name of current reports template document.
+
+    Returns:
+        Reports template document name.
+    """
+    return environ['REPORT_TEMPLATE']

@@ -13,13 +13,14 @@ from chip_logistics.api.routers.bot.deps import (
     get_bot,
     get_currencies_service,
     get_dispatcher,
+    get_report_template_repo,
 )
 from chip_logistics.api.routers.deps import get_amocrm_client
 from chip_logistics.bot.handler_result import HandlerResult
 from chip_logistics.config import get_bot_secret
 from chip_logistics.core.amocrm.client import AmoCRMClient
 from chip_logistics.core.articles.currencies import CurrenciesService
-from chip_logistics.core.articles.repo import ArticlesRepo
+from chip_logistics.core.articles.repo import ArticlesRepo, ReportTemplateRepo
 
 router = APIRouter(prefix='/webhook')
 
@@ -28,6 +29,10 @@ SecretHeader = Header(alias='X-Telegram-Bot-Api-Secret-Token')
 
 
 ArticlesRepoDep = Annotated[ArticlesRepo, Depends(get_articles_repo)]
+ReportTemplateRepoDep = Annotated[
+    ReportTemplateRepo,
+    Depends(get_report_template_repo),
+]
 CurrenciesServiceDep = Annotated[
     CurrenciesService,
     Depends(get_currencies_service),
@@ -43,6 +48,7 @@ async def handle_update(  # noqa: WPS211
     dispatcher: Annotated[Dispatcher, Depends(get_dispatcher)],
     expected_secret: Annotated[str, Depends(get_bot_secret)],
     articles_repo: ArticlesRepoDep,
+    report_template_repo: ReportTemplateRepoDep,
     currencies_service: CurrenciesServiceDep,
     amocrm_client: AmoCRMServiceDep,
 ) -> HandlerResult:
@@ -59,6 +65,7 @@ async def handle_update(  # noqa: WPS211
         expected_secret: Secret for request verification. See `config.py`.
         secret: Request secret.
         articles_repo: Articles storage.
+        report_template_repo: Report templates storage.
         currencies_service: Currencies operations provider.
         amocrm_client: AmoCRM client.
 
@@ -79,5 +86,6 @@ async def handle_update(  # noqa: WPS211
         update=update,
         articles_repo=articles_repo,
         currencies_service=currencies_service,
+        report_template_repo=report_template_repo,
         amocrm_client=amocrm_client,
     )

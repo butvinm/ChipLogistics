@@ -15,3 +15,5 @@ micros:
           description: telegram webhook secret
         - name: FIXER_API_KEY
           description: API key for fixer.io
+        - name: REPORT_TEMPLATE
+          description: Report template document in Drive.
