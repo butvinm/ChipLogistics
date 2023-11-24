@@ -3,13 +3,28 @@
 
 # List of articles and them costs
 from decimal import Decimal
+from pathlib import Path
 from random import randint
+
+import pytest
 
 from chip_logistics.core.articles.models import ArticleItem, Currency
 
 ARTICLE_NAME_PREFIX = 'Article'
 
 DEFAULT_DUTY_FEE_RATIO = Decimal('1')
+
+REPORT_TEMPLATE_FILE = Path('tests/articles/report_template.docx')
+
+
+@pytest.fixture
+def report_template() -> bytes:
+    """Get test report template file.
+
+    Returns:
+        Template content.
+    """
+    return REPORT_TEMPLATE_FILE.read_bytes()
 
 
 def gen_article_name() -> str:

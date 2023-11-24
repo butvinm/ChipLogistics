@@ -72,3 +72,15 @@ class ArticlesRepo(AClosing, Protocol):
         Returns:
             True if article deleted.
         """
+
+
+@runtime_checkable
+class ReportTemplateRepo(AClosing, Protocol):
+    """Interface of report template storage."""
+
+    async def get_template(self) -> Optional[bytes]:
+        """Get report template file.
+
+        Returns:
+            File data.
+        """

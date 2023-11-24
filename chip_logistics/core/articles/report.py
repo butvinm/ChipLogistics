@@ -1,29 +1,28 @@
-"""CSV report generation."""
+"""CSV report generation.
+
+Report is builded from template that is DOCX file with SINGLE table.
+That table would be replaced with corresponding data.
+"""
 
 
 from datetime import datetime
 from decimal import Decimal
 from io import BytesIO
-from typing import Union
+from typing import Any, Union
 
-from openpyxl import Workbook
-from openpyxl.styles import Font
-from openpyxl.utils import get_column_letter
-from openpyxl.worksheet.worksheet import Worksheet
+from docxtpl import DocxTemplate
+from pydantic import BaseModel
 
 from chip_logistics.core.articles.models import ArticleItem
-
-# Multiplier of content size to adjust column width
-COLUMN_WIDTH_RATIO = 1.3
 
 
 def generate_report_name() -> str:
     """Generate report file name from current datetime.
 
     Returns:
-        Report file name with .xlsx extension.
+        Report file name with .docx extension.
     """
-    return 'Расчет-{date}.xlsx'.format(
+    return 'Расчет-{date}.docx'.format(
         date=datetime.now().strftime('%H:%M-%m.%d.%Y'),
     )
 
@@ -42,38 +41,20 @@ def get_formatted_number(number: Union[float, Decimal]) -> str:
     return '{0:.1f}'.format(number)
 
 
-def add_header(sheet: Worksheet, columns_names: list[str]) -> None:
-    """Add header with bold columns names to sheet.
+class TableData(BaseModel):
+    """Table data representation."""
 
-    Args:
-        sheet: Target worksheet.
-        columns_names: Names of columns in header.
-    """
-    header_font = Font(bold=True)
-    for column, column_name in enumerate(columns_names):
-        cell = sheet.cell(1, column + 1, value=column_name)
-        cell.font = header_font
+    cells: list[list[Any]]
+    cols: int
+    rows: int
 
 
-def adjust_columns_width(sheet: Worksheet) -> None:
-    """Adjust columns width to content.
-
-    Args:
-        sheet: Worksheet to adjust.
-    """
-    for column_num, cells in enumerate(sheet.columns, start=1):
-        contents_width = (len(str(cell.value)) for cell in cells)
-        max_width = max(contents_width, default=0)
-        column = sheet.column_dimensions[get_column_letter(column_num)]
-        column.width = max_width * COLUMN_WIDTH_RATIO
-
-
-def create_calculations_report(
+def build_table_data(
     calculations_results: list[tuple[ArticleItem, Decimal]],
     total_price: Decimal,
     customer_name: str,
-) -> tuple[bytes, str]:
-    """Generate Excel calculations report.
+) -> TableData:
+    """Create report table content.
 
     Args:
         calculations_results: List with item sand their costs.
@@ -81,39 +62,86 @@ def create_calculations_report(
         customer_name: Customer name.
 
     Returns:
+        Table data.
+    """
+    cells: list[list[Any]] = []
+    # header
+    header = [
+        'Клиент',
+        'Наименование',
+        'Количество',
+        'Общий вес',
+        'Цена (В долларах)',
+    ]
+    cells.append(header)
+
+    # articles data
+    for article_item, price in calculations_results:
+        cells.append([
+            customer_name,
+            article_item.name,
+            str(article_item.count),
+            str(article_item.unit_weight * article_item.count),
+            get_formatted_number(price),
+        ])
+
+    # footer
+    cells.append([])
+    cells.append([
+        'Общая стоимость (В долларах)',
+        get_formatted_number(total_price),
+    ])
+    return TableData(cells=cells, cols=len(header), rows=len(cells))
+
+
+def create_calculations_report(
+    calculations_results: list[tuple[ArticleItem, Decimal]],
+    total_price: Decimal,
+    customer_name: str,
+    template: bytes,
+) -> tuple[bytes, str]:
+    """Generate Excel calculations report.
+
+    Available template params:
+        headers: Table headers labels.
+        articles: List with calculated articles info as list of fields.
+        total: Total price.
+
+    See DocxTpl documentation for templates syntaxes reference:
+    https://github.com/elapouya/python-docx-template
+
+    Args:
+        calculations_results: List with item sand their costs.
+        total_price: Total items price.
+        customer_name: Customer name.
+        template: Docx template.
+
+    Returns:
         File data and name.
     """
-    workbook = Workbook()
-    sheet = workbook.active
-
-    add_header(
-        sheet,
-        [
+    doc = DocxTemplate(BytesIO(template))
+    context = {
+        'headers': [
             'Клиент',
             'Наименование',
             'Количество',
             'Общий вес',
             'Цена (В долларах)',
         ],
-    )
+        'articles': [
+            [
+                customer_name,
+                article_item.name,
+                str(article_item.count),
+                str(article_item.unit_weight * article_item.count),
+                get_formatted_number(price),
+            ]
+            for article_item, price in calculations_results
+        ],
+        'total': total_price,
+    }
+    doc.render(context)
 
-    for article_item, price in calculations_results:
-        sheet.append([
-            customer_name,
-            article_item.name,
-            article_item.count,
-            article_item.unit_weight * article_item.count,
-            get_formatted_number(price),
-        ])
-
-    sheet.append([])
-    sheet.append([
-        'Общая стоимость (В долларах)',
-        get_formatted_number(total_price),
-    ])
-
-    adjust_columns_width(sheet)
-
-    file_buffer = BytesIO()
-    workbook.save(file_buffer)
-    return file_buffer.getvalue(), generate_report_name()
+    doc_buffer = BytesIO()
+    doc.save(doc_buffer)
+    return doc_buffer.getvalue(), generate_report_name()
