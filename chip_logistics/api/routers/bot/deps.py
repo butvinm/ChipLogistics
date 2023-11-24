@@ -8,10 +8,17 @@ from deta import Deta
 from fastapi import Depends
 
 from chip_logistics.bot.factory import init_bot, init_dispatcher
-from chip_logistics.config import get_bot_token, get_fixer_api_key
+from chip_logistics.config import (
+    get_bot_token,
+    get_fixer_api_key,
+    get_repo_template_name,
+)
 from chip_logistics.core.articles.currencies import CurrenciesService
-from chip_logistics.core.articles.repo import ArticlesRepo
-from chip_logistics.deta.articles.repo import DetaArticlesRepo
+from chip_logistics.core.articles.repo import ArticlesRepo, ReportTemplateRepo
+from chip_logistics.deta.articles.repo import (
+    DetaArticlesRepo,
+    DetaReportTemplateRepo,
+)
 from chip_logistics.deta.deta import get_deta
 
 
@@ -89,7 +96,18 @@ async def get_currencies_service(
         yield service
 
 
-CurrenciesServiceDep = Annotated[
-    CurrenciesService,
-    Depends(get_currencies_service),
-]
+async def get_report_template_repo(
+    template: Annotated[str, Depends(get_repo_template_name)],
+    deta: Annotated[Deta, Depends(get_deta)],
+) -> AsyncGenerator[ReportTemplateRepo, None]:
+    """Get report templates repo instance.
+
+    Args:
+        template: Currently used template.
+        deta: Deta API.
+
+    Yields:
+        Templates repository.
+    """
+    async with DetaReportTemplateRepo(template, deta) as repo:
+        yield repo
