@@ -8,7 +8,7 @@ from typing import Optional
 from deta import Deta
 
 from chip_logistics.core.articles.models import ArticleInfo
-from chip_logistics.core.articles.repo import ArticlesRepo
+from chip_logistics.core.articles.repo import ArticlesRepo, ReportTemplateRepo
 from chip_logistics.deta.models import model_dump
 
 
@@ -119,6 +119,37 @@ class DetaArticlesRepo(ArticlesRepo):
     async def aclose(self) -> None:
         """Close base and clean resources."""
         await self._base.close()
+
+
+class DetaReportTemplateRepo(ReportTemplateRepo):
+    """Deta Drive implementation of report template storage."""
+
+    def __init__(self, template_name: str, deta: Deta) -> None:
+        """Init repository.
+
+        Args:
+            template_name: Name of template file in Drive to use for reports.
+            deta: Deta API.
+        """
+        super().__init__()
+        self.template_name = template_name
+        self._drive = deta.Drive('report_templates')
+
+    async def get_template(self) -> Optional[bytes]:
+        """Get report template file.
+
+        Returns:
+            File data.
+        """
+        file_stream = self._drive.get(self.template_name)
+        if file_stream is None:
+            return None
+
+        return bytes(file_stream.read())
+
+    async def aclose(self) -> None:
+        """Close drive and clean resources."""
+        await self._drive.close()
 
 
 def _generate_id() -> str:
