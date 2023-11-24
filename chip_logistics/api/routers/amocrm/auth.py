@@ -15,7 +15,7 @@ from chip_logistics.core.amocrm.client import AmoCRMClient
 router = APIRouter(prefix='/auth')
 
 
-@router.get('/')
+@router.get('')
 async def handle_authorization(
     code: str,
     referer: str,
@@ -43,7 +43,7 @@ async def handle_authorization(
     """
 
 
-@router.post('/')
+@router.post('')
 async def authorize_client(
     auth_code: str,
     client: Annotated[AmoCRMClient, Depends(get_amocrm_client)],
@@ -57,7 +57,7 @@ async def authorize_client(
     await authorize(client, auth_code)
 
 
-@router.patch('/')
+@router.patch('')
 async def refresh_auth_token(
     client: Annotated[AmoCRMClient, Depends(get_amocrm_client)],
 ) -> None:

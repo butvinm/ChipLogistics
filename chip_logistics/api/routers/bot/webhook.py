@@ -35,7 +35,7 @@ CurrenciesServiceDep = Annotated[
 AmoCRMServiceDep = Annotated[AmoCRMClient, Depends(get_amocrm_client)]
 
 
-@router.post('/')
+@router.post('')
 async def handle_update(  # noqa: WPS211
     update: Update,
     secret: Annotated[SecretStr, SecretHeader],
